@@ -1,0 +1,12 @@
+em4s0 Embedded Middleware for Smart Objects + Java API
+Copyright 2016 mperhez
+
+This software use API libraries and classes provided by EVE Agent Platform (http://eve.almende.com/).
+
+This software includes classes derived from OGC SensorThings API model (http://www.opengeospatial.org/projects/groups/sensorthings). Particularly classes under package org.ogc.sensorthings.
+
+Other third-party software libraries used in em4so include:
+- Jetty web server (http://www.eclipse.org/jetty/)
+- logback logging framework (http://logback.qos.ch/)  
+- Method Parameter Name Access for Java (https://github.com/paul-hammant/paranamer)
+- GeoJson POJOs for Jackson (https://github.com/opendatalab-de/geojson-jackson)
