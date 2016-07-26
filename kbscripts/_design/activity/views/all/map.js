@@ -1,0 +1,1 @@
+function(doc){if(doc.type && doc.type=='activity')emit(doc._id,doc);}

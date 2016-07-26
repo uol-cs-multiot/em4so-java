@@ -1,0 +1,1 @@
+function (head, req) {provides('json', function() {var results = null;while (row = getRow()){ results=row.value.currentValue;}send(JSON.stringify(results));});}

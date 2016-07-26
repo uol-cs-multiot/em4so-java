@@ -1,0 +1,1 @@
+function(doc,req){ if(!doc){doc = {_id:req.id,type:req.query.type,property:req.query.property,readings:[{sensor:req.query.sensor,time:req.query.time,value:req.query.value}]};}else{doc.readings.push({sensor:req.query.sensor,time:req.query.time, value:req.query.value})};return[doc, 'Updated '+doc.myproperty]}

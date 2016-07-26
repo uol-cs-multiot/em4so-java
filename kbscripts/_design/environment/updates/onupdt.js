@@ -1,0 +1,1 @@
+function(doc,req){ if(!doc){doc = {_id:req.id};doc['type']='environment';doc['name']=req.query.name;}doc.currentValue=req.query.newValue;return[doc, 'Updated '+doc._id]}

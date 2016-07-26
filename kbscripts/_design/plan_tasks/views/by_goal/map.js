@@ -1,0 +1,1 @@
+function(doc) { if (doc.Type == 'plan' && doc.goal)  emit(doc.goal, doc.tasks) }

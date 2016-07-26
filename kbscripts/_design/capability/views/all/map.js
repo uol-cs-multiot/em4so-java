@@ -1,0 +1,1 @@
+function(doc){if(doc.type && doc.type=='capability')emit(doc._id,doc);}

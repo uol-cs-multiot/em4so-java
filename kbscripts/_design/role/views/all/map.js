@@ -1,0 +1,1 @@
+function (doc){if(doc.type && doc.type=='role'){emit(doc._id,{name: doc.name, function: doc.function});  if(doc.responsibilities)  doc.responsibilities.forEach(function(activity){emit(doc._id,{_id:activity._id});});if(doc.goals)  doc.goals.forEach(function(goal){emit(doc._id,{_id:goal._id});})}}

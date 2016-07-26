@@ -1,0 +1,1 @@
+function(doc){if(doc.type && doc.type=='environment'){ emit(doc.name,doc);}}

@@ -1,0 +1,1 @@
+function(doc) { if (doc.Type == 'plan')  emit(null, doc) }

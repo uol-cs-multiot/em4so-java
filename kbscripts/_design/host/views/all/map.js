@@ -1,0 +1,1 @@
+function(doc){if(doc.type && doc.type=='host')emit(doc._id,doc);}
