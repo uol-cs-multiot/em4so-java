@@ -1,0 +1,12 @@
+{
+   "_id": "scenario/keepHomeResources",
+   "type": "scenario",
+   "goal": "goals/keepHomeResources",
+   "description":"scenario for achieving goal keep home resources",
+   "steps":[
+   {"activity":"activity/increaseHomeDemand"},
+   {"activity":"activity/askForRepurchase"},
+   {"activity":"activity/askNotifyUser"}
+   ]
+   
+}

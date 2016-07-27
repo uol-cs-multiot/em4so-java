@@ -1,0 +1,9 @@
+{
+   "_id": "scenario/keepAirFresh",
+   "type": "scenario",
+   "goal": "goals/keepAirFresh",
+   "description":"scenario for achieving goal keep air fresh",
+   "steps":[
+   {"activity":"activity/keepAirFresh"}
+   ]
+}

@@ -1,0 +1,9 @@
+{
+   "_id": "property/home/home.freshener",
+   "type": "property",
+   "name": "home.freshener",
+   "units": "boolean",
+   "scope":"home",
+   "kind":"resource",
+   "value": "2"
+}

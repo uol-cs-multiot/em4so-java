@@ -1,0 +1,14 @@
+som:
+   name: stv
+   roles: role/userNotifier
+ltmemory: 
+   url: http://127.0.0.1:5984
+   kb_prefix: kbl_
+   user: admin
+   pass: password
+capabilities:
+   pkg: stv-1.0.jar
+   sense: readValue
+   categories: user-interface
+transport:
+   port: 8094

@@ -1,0 +1,11 @@
+{
+   "_id": "goals/keepUserInformed",
+   "type": "goal",
+   "parent":"goals/keepWorking",
+   "priority":"3",
+   "description":"keep user informed",
+   "status":"pending",
+   "properties": {
+       "resources": {"intendedState": "full", "achieved": "false"}
+   }
+}

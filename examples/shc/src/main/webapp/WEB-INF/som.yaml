@@ -1,0 +1,9 @@
+ltmemory: 
+   url: http://127.0.0.1:5984
+   kb_prefix: kbl_
+   user: admin
+   pass: password
+capabilities:
+   pkg: capabilities
+   sense: readValue
+

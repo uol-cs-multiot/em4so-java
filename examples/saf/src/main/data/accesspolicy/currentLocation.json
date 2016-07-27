@@ -1,0 +1,9 @@
+{
+   "_id": "accesspolicy/currentLocation",
+   "type": "accesspolicy",
+   "resource": "currentLocation",
+   "access": [
+       "http://localhost:8080/somanager/agents/managerag2",
+       "http://localhost:8080/somanager/agents/managerag1"
+   ]
+}

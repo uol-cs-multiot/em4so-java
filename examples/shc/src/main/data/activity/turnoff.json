@@ -1,0 +1,19 @@
+{
+   "_id": "activity/turnoff",
+   "type": "activity",
+   "categories": [
+       "air-freshener"
+   ],
+   "input": {
+   },
+   "description": "This activity encloses the actions to turn off the so ",
+   "actions": [
+       {
+           "name": "turnOff",
+           "args": [
+           ]
+       }
+   ],
+   "quality": {
+   }
+}

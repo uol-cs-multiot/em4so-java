@@ -1,0 +1,11 @@
+{
+"type":"concept",
+"_id":"concept/high",
+"name": "high",
+"equivalent":[
+"100","TRUE"
+]	,
+"leadedby":"increase",
+"makesvalid":["greatherthan","greatherequalthan"
+]
+}

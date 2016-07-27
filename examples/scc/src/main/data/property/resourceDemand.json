@@ -1,0 +1,8 @@
+{
+   "_id": "property/demand/demand.freshener",
+   "type": "property",
+   "name": "demand.freshener",
+   "units": "boolean",
+   "scope":"demand",
+   "kind":"resource"
+}

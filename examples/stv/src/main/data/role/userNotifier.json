@@ -1,0 +1,15 @@
+{
+   "_id": "role/userNotifier",
+   "type": "role",
+   "name": "userNotifier",
+      "goals": [
+       {
+           "_id": "goals/keepUserInformed"
+       }
+   ],
+   "responsibilities": [
+     {
+	           "_id": "activity/notifyUser"
+	       }
+   ]
+}

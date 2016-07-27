@@ -1,0 +1,11 @@
+{
+   "_id": "goals/keepDepositFull",
+   "type": "goal",
+   "parent":"goals/keepWorking",
+   "priority":"3",
+   "description":"keep deposit full",
+   "status":"pending",
+   "properties": [
+   		{"scope":"room","property":"freshness","target":"high","achieved":"false"}       
+   ]
+}

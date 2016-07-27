@@ -1,0 +1,6 @@
+{
+   "_id": "environment/freshener",
+   "type": "environment",
+   "name": "freshener",
+   "currentValue": "10"
+}

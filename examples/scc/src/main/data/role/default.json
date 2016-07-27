@@ -1,0 +1,24 @@
+{
+   "_id": "role/energysaver",
+   "name": "default",
+   "type": "role1",
+   "event": {
+       "only": [
+           {
+               "property": "sostatus",
+               "comparator": "=",
+               "reference": "idle"
+           }
+       ]
+   },
+   "goals": [
+       {
+           "_id": "goals/saveEnergy"
+       }
+   ],
+   "responsibilities": [
+   		 {
+           "_id": "activity/turnoff"
+       }
+   ]
+}

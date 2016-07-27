@@ -1,0 +1,52 @@
+{   "_id": "activity/notifyUser",
+   "type": "activity",
+   "categories": [
+       "user-interface"
+   ],
+   "input": 
+	{"knowledge": 
+		[{		"scope": "home",
+				"kind": "resource",
+				"name":"freshener",
+				"attrNames": 
+				[
+					"name", "model"
+				]},
+				{		"scope": "store",
+				"kind": "feature",
+				"name":"storeName",
+				"attrNames": 
+				[
+					"value"
+				]},
+				{		"scope": "user",
+				"kind": "feature",
+				"name":"userPreferences1",
+				"attrNames": 
+				[
+					"name","message"
+				]}
+				],
+				"operator": "==",
+				"operand1":	{	"from": {"role":"role/homeSupplier"},
+					"kind": "message" },
+				"operand2":	{
+					"value": "notify" }},
+   "description": "actions to notify user",
+   "actions": [
+   
+    { 
+   			"id": "1",
+           "name": "notifyUser",
+           "args": [
+           			{ "content": {"java.lang.String": "k2.value" } },
+                  	{"user": {"org.mp.em4so.model.common.Element": "k3" } }
+                  ]
+    } 
+                        
+           ],
+   "output": [	
+		],
+   "quality": {
+   }
+}

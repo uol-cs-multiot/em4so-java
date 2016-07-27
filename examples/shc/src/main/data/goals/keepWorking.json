@@ -1,0 +1,11 @@
+{
+   "_id": "goals/keepWorking",
+   "type": "goal",
+   "parent":"",
+   "priority":"1",
+   "description":"keep SO working",
+   "status":"pending",
+   "properties": {
+       "working": {"intendedState": "ok", "achieved": "false"}
+   }
+}

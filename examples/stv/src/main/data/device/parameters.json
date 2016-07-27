@@ -1,0 +1,19 @@
+{
+   "_id": "device/parameters",
+   "type": "parameters",
+   "parameters": [
+       {
+           "type": [
+               "level",
+               "temperature",
+               "air_quality"
+           ]
+       },
+       {
+           "mode": [
+               "active",
+               "passive"
+           ]
+       }
+   ]
+}

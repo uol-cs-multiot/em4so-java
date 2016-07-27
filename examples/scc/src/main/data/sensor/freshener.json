@@ -1,0 +1,10 @@
+{
+   "_id": "sensor/resourceSensor",
+   "type": "sensor",
+   "kind": "quantity",
+   "mode": "passive",
+   "property": ["demand.freshener", "home.freshener"],
+   "status": "enabled",
+   "location": "TODO",
+   "capability": "org.mp.em4so.common.capabilities.SensingCapability"
+}

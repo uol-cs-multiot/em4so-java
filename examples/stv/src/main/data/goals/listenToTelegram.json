@@ -1,0 +1,11 @@
+{
+   "_id": "goals/listenToTelegramG",
+   "type": "goal",
+   "parent":"goals/keepWorking",
+   "priority":"3",
+   "description":"Listen to messages from Telegram platform",
+   "status":"pending",
+   "properties": {
+       "resources": {"intendedState": "full", "achieved": "false"}
+   }
+}

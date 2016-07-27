@@ -1,0 +1,7 @@
+{
+"type":"concept",
+"_id":"concept/biggerequalthan",
+"name": "biggerequalthan",
+"complement":"concept/lowerthan",
+"symbol":">="
+}

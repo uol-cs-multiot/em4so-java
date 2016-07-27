@@ -1,0 +1,75 @@
+{
+   "_id": "activity/askForResourceReplacement",
+   "type": "activity",
+   "categories": [
+       "supplies-management"
+   ],
+   "input": 
+	{
+		"knowledge": 
+		[
+			{
+				"scope": "saf_agent",
+				"kind": "resource",
+				"name":"freshener",
+				"attrNames": 
+				[
+					"model"
+				]
+			},
+			{
+				"kind": "message",
+				"to":{"role":"role/homeSuppliesManager"},
+				"value":"lowlevel"
+				
+			}
+		],
+
+		
+				"operator": "<",
+				"operand1": 
+				{
+					"scope": "saf_agent",
+					"kind": "resource",
+					"name":"freshener",
+					"attributeName": "level"
+				},
+
+				"operand2": 
+				{
+					"value": "10"
+				}
+		
+	},
+   "description": "This activity encloses the actions to get the deposit refilled",
+   "actions": [
+       {
+           "id": "1",
+           "name": "transfer",
+           "args": [
+               {
+               		
+                   "msg": {
+                      "org.mp.em4so.model.common.Element":"k2" 
+                   },
+                   "property": {
+                       "org.mp.em4so.model.common.Element": "k1"
+                   }
+               }
+           ]
+       }
+   ],
+   "output": 
+	[
+		
+		{
+			"knowledge":["k1"],
+			"effect": "communicate"
+		}
+		
+	]
+   
+   ,
+   "quality": {
+   }
+}

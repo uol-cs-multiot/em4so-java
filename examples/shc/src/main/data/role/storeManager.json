@@ -1,0 +1,15 @@
+{
+   "_id": "role/storeManager",
+   "type": "role",
+   "name": "storeManager",
+      "goals": [
+       {
+           "_id": "goals/keepHomeResources"
+       }
+   ],
+   "responsibilities": [
+     {
+	           "_id": "activity/findNearbyResourceSupplier"
+	       }
+   ]
+}

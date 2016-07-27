@@ -1,0 +1,10 @@
+{
+   "_id": "scenario/keepDepositFull",
+   "type": "scenario",
+   "goal": "goals/keepDepositFull",
+   "description":"scenario for achieving goal keep deposit full",
+    "steps":[
+       {"activity":"activity/notifyUser"}
+   ]
+   
+}

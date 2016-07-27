@@ -1,0 +1,16 @@
+{
+"type":"object",
+"name":"SAF",
+"resource":[
+{			"type":"freshener",
+			"status":"10",
+			"model":"abc123"
+			},{
+			"type":"battery",
+			"status":"10",
+			"model":"abc123"
+			}
+],
+"status":"on",
+"owner":"user/jhon"
+}

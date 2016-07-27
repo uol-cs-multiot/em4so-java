@@ -1,0 +1,9 @@
+{
+   "_id": "property/currentLocation",
+   "type": "property",
+   "name": "currentLocation",
+   "units": "coordinates",
+   "access": "private",
+   "scope":"saf_agent",
+   "kind":"feature"
+}

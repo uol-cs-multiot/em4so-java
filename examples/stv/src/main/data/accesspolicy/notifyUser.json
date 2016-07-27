@@ -1,0 +1,8 @@
+{
+   "_id": "accesspolicy/notifyUser",
+   "type": "accesspolicy",
+   "resource": "notifyUser",
+   "access": [
+       "http://127.0.0.1:8092/somanager/scc_agent"
+   ]
+}

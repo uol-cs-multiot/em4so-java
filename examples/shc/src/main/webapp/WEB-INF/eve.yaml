@@ -1,0 +1,21 @@
+#First we define a template for usage per agent. The ExampleAgent extends Eve's Agent class.
+
+template:
+   defaultAgent:
+        state:
+        -  class: com.almende.eve.state.memory.MemoryStateBuilder
+        scheduler:
+        -  class: com.almende.eve.scheduling.SimpleSchedulerBuilder
+        transport:
+        -  class: com.almende.eve.transport.http.HttpTransportBuilder
+           servletUrl: http://127.0.0.1:8093/shc/agents/
+           servletClass: com.almende.eve.transport.http.DebugServlet
+           doShortcut: true
+           doAuthentication: false
+
+#Here we define the agents themselves:
+agents:
+-  id: shc_agent
+   class: agentManager.SmartObjectAgManager
+   extends: template/defaultAgent
+

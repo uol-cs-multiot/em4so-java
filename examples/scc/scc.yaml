@@ -1,0 +1,15 @@
+som:
+   name: scc 
+   roles: role/supplyManager, role/homeSuppliesManager
+ltmemory: 
+   url: http://127.0.0.1:5984
+   kb_prefix: kbl_
+   user: admin
+   pass: password
+capabilities:
+   pkg: scc-1.0.jar
+   categories: home
+   sense: readValue
+   categories: home-security, airquality
+transport:
+   port: 8092

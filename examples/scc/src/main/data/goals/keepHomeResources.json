@@ -1,0 +1,11 @@
+{
+   "_id": "goals/keepHomeResources",
+   "type": "goal",
+   "parent":"goals/keepWorking",
+   "priority":"3",
+   "description":"keep home resources",
+   "status":"pending",
+   "properties": {
+       "resources": {"intendedState": "full", "achieved": "false"}
+   }
+}

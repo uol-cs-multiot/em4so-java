@@ -1,0 +1,11 @@
+{
+	"_id": "host/scc",
+   "type": "host",
+   "name": "scc",
+   "urls": ["http://127.0.0.1:8092/somanager/scc_agent"
+           ],
+   "categories" :["home"],
+   "roles":["role/homeSuppliesManager"],
+   "ranking":0.5
+   
+}

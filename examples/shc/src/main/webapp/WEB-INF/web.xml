@@ -1,0 +1,62 @@
+<!DOCTYPE web-app PUBLIC
+ "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+ "http://java.sun.com/dtd/web-app_2_3.dtd" >
+
+<web-app>
+	<display-name>Smart Home Controller</display-name>
+	<!-- Eve Configuration file -->
+	<context-param>
+		<param-name>eve_config</param-name>
+		<param-value>eve.yaml</param-value>
+		<description>eve configuration yaml file</description>
+	</context-param>
+	<!-- Eve authentication parameter -->
+	<context-param>
+		<param-name>eve_authentication</param-name>
+		<param-value>false</param-value>
+		<description>eve authentication</description>
+	</context-param>
+	<context-param>
+		<param-name>som_config</param-name>
+		<param-value>som.yaml</param-value>
+		<description>SOM configuration yaml file</description>
+	</context-param>
+	<!-- Eve Listener -->
+<!-- 	<listener> -->
+<!-- 		<listener-class>com.almende.eve.deploy.EveListener</listener-class> -->
+<!-- 	</listener> -->
+
+	<listener>
+		<listener-class>listeners.SOMListener</listener-class>
+	</listener>
+
+
+	<!-- Http Service to access agent -->
+	<servlet>
+		<servlet-name>war</servlet-name>
+		<servlet-class>com.almende.eve.transport.http.DebugServlet</servlet-class>
+		<init-param>
+			<param-name>ServletUrl</param-name>
+			<param-value>http://127.0.0.1:8093/shc/agents/</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>war</servlet-name>
+		<url-pattern>/agents/*</url-pattern>
+	</servlet-mapping>
+	
+	
+	<servlet>
+    <servlet-name>ViewStatusMessages</servlet-name>
+    <servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>ViewStatusMessages</servlet-name>
+    <url-pattern>/agentStatus</url-pattern>
+  </servlet-mapping>
+
+
+</web-app>

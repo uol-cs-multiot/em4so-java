@@ -1,0 +1,12 @@
+{
+   "_id": "goals/saveEnergy",
+   "type": "goal",
+   "parent":"goals/keepWorking",
+   "priority":"3",
+   "description":"keep air fresh",
+   "status":"pending",
+   "properties": {
+       "energy": {"intendedState": "full", "achieved": "false"}
+   }
+   
+}

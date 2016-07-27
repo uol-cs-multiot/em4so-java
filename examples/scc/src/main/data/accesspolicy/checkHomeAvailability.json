@@ -1,0 +1,8 @@
+{
+   "_id": "accesspolicy/checkHomeAvailability",
+   "type": "accesspolicy",
+   "resource": "checkHomeAvailability",
+   "access": [
+       "http://127.0.0.1:8091/somanager/saf_agent"
+   ]
+}

@@ -1,0 +1,10 @@
+{
+   "_id": "sensor/freshener",
+   "type": "sensor",
+   "kind": "volume",
+   "mode": "passive",
+   "property": ["freshener"],
+   "status": "enabled",
+   "location": "TODO",
+   "capability": "capabilities.DepositLevelSensing"
+}

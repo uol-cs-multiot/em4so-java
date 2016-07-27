@@ -1,0 +1,24 @@
+{
+   "_id": "role/homeSuppliesManager",
+   "type": "role",
+   "name": "homeSuppliesManager",
+      "goals": [
+       {
+           "_id": "goals/keepHomeResources"
+       }
+   ],
+   "responsibilities": [
+     {
+	           "_id": "activity/increaseHomeDemand"
+	       },
+       {
+           "_id": "activity/askForRepurchase"
+       },
+       {
+           "_id": "activity/askNotifyUser"
+       },
+        {
+           "_id": "activity/turnoff"
+       }
+   ]
+}

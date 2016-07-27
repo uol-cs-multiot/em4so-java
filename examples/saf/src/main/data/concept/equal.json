@@ -1,0 +1,7 @@
+{
+"type":"concept",
+"_id":"concept/equal",
+"name": "equal",
+"complement":"concept/notequal",
+"symbol":"=="
+}

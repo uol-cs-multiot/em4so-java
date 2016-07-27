@@ -1,0 +1,11 @@
+{
+   "_id": "role/supplyManager",
+   "type": "role",
+   "name": "supplyManager",
+
+   "responsibilities": [
+       {
+ 			"_id": "activity/askForResourceReplacement"
+       }
+   ]
+}

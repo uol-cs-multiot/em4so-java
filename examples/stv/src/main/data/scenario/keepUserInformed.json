@@ -1,0 +1,10 @@
+{
+   "_id": "scenario/keepUserInformed",
+   "type": "scenario",
+   "goal": "goals/keepUserInformed",
+   "description":"scenario for achieving goal keep user informed",
+   "steps":[
+   {"activity":"activity/notifyUser"}
+   ]
+   
+}

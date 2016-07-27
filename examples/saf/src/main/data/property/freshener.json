@@ -1,0 +1,10 @@
+{
+   "_id": "property/saf_agent/freshener",
+   "type": "property",
+   "kind": "resource",
+   "name": "freshener",
+   "units": "ml",
+   "scope":"saf_agent",
+   "model": "abc123",
+   "minimun": "1"
+}

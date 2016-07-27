@@ -1,0 +1,14 @@
+{
+"type":"space",
+"_id":"space/home",
+"resource":[
+{"type":"freshener",
+			"status":"10",
+			"model":"abc123"},
+{"type":"battery",
+			"status":"5",
+			"model":"bat123"}
+
+]
+
+}

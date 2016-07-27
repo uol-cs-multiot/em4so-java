@@ -1,0 +1,73 @@
+{
+   "_id": "activity/askNotifyUser",
+   "type": "activity",
+   "categories": [
+       "user-interface"
+   ],
+   "input": 
+	{
+		"knowledge": 
+		[
+			{
+				"scope": "home",
+				"kind": "resource",
+				"name":"freshener",
+				"attrNames": 
+				[
+					"model"
+				]
+			},
+			{
+				"scope": "store",
+				"kind": "feature",
+				"name":"storeName",
+				"attrNames": 
+				[
+					"value"
+				]
+			},
+			{
+				"kind": "message",
+				"to":{"role":"role/userNotifier"},
+				"value":"notify"
+				
+			}
+		],
+
+		"operator": "==",
+				"operand1":	{	"from": {"role":"role/storeManager"},"kind": "message" },
+				"operand2":	{"value": "repurchase-reply" }
+		
+	},
+   "description": "This activity encloses the actions to get the deposit refilled",
+   "actions": [
+       {
+           "id": "1",
+           "name": "transfer",
+           "args": [
+               {
+               		
+                   "msg": {
+                      "org.mp.em4so.model.common.Element":"k3" 
+                   },
+                   "property": {
+                       "org.mp.em4so.model.common.Element": "k2"
+                   }
+               }
+           ]
+       }
+   ],
+   "output": 
+	[
+		
+		{
+			"knowledge":["k1"],
+			"effect": "communicate"
+		}
+		
+	]
+   
+   ,
+   "quality": {
+   }
+}

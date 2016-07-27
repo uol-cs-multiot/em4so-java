@@ -1,0 +1,7 @@
+{
+"type":"concept",
+"_id":"concept/lowerequalthan",
+"name": "lowerequalthan",
+"complement":"concept/biggerthan",
+"symbol":"<="
+}

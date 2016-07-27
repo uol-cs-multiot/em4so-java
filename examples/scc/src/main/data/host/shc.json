@@ -1,0 +1,11 @@
+{
+	"_id": "host/shc",
+   "type": "host",
+   "name": "shc",
+   "urls": ["http://127.0.0.1:8093/somanager/shc_agent"
+           ],
+   "categories" :["home"],
+   "roles":["role/userNotifier","role/storeManager"],
+   "ranking":0.5
+   
+}

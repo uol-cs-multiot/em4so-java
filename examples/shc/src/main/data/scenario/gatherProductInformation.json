@@ -1,0 +1,10 @@
+{
+   "_id": "scenario/gatherProductInformation",
+   "type": "scenario",
+   "goal": "goals/gatherProductInformation",
+   "description":"scenario for achieving goal gather product information",
+   "steps":[
+   {"activity":"activity/findNearbyResourceSupplier"}
+   ]
+   
+}

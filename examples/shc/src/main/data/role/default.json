@@ -1,0 +1,19 @@
+{
+   "_id": "role/energysaver",
+   "name": "energysaver",
+   "type": "role",
+   "event": {
+       "only": [
+           {
+               "property": "sostatus",
+               "comparator": "=",
+               "reference": "idle"
+           }
+       ]
+   },
+   "responsibilities": [
+   		 {
+           "_id": "activity/turnoff"
+       }
+   ]
+}

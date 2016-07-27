@@ -1,0 +1,14 @@
+som:
+   name: shc 
+   roles: role/storeManager
+ltmemory: 
+   url: http://127.0.0.1:5984
+   kb_prefix: kbl_
+   user: admin
+   pass: password
+capabilities:
+   pkg: shc-1.0.jar
+   sense: readValue
+   categories: home-security, airquality
+transport:
+   port: 8093

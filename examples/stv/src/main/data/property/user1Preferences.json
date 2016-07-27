@@ -1,0 +1,8 @@
+{
+   "_id": "property/user/userPreferences1",
+   "type": "property",
+   "scope" : "user",
+   "name": "userPreferences1",
+   "message":" has been completly consumed. You need to buy more supplies. ",
+   "mobile":"+447890123456"
+}

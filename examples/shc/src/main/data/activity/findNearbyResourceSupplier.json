@@ -1,0 +1,70 @@
+{   "_id": "activity/findNearbyResourceSupplier",
+   "type": "activity",
+   "categories": [
+       "store-management"
+   ],
+   "input": 
+	{"knowledge": 
+		[{		"scope": "home",
+				"kind": "resource",
+				"name":"freshener",
+				"attrNames": 
+				[
+					"model","name"
+				]},
+				
+				{
+				"kind": "message",
+				"to":{"role":"role/homeSuppliesManager"},
+				"value":"repurchase-reply"
+				}
+				],
+				"operator": "==",
+				"operand1":	{	"from": {"role":"role/homeSupplier"},
+					"kind": "message" },
+				"operand2":	{
+					"value": "repurchase" }},
+   "description": "actions to check where to repurchase",
+   "actions": [ { 
+   			"id": "1",
+           "name": "checkBestPriceStore",
+           "args": [{
+               		"product": {
+                       "java.lang.String": "k1.name" },
+                   "model": {
+                       "java.lang.String": "k1.model" } } ],
+           "result":{"java.lang.String":"o1"} } ,
+           
+           {
+           "id": "2",
+           "name": "transfer",
+           "args": [
+               {
+               		
+                   "msg": {
+                      "org.mp.em4so.model.common.Element":"k2" 
+                   },
+                   "property": {
+                       "org.mp.em4so.model.common.Element": "o1"
+                   }
+               }
+           ]
+       }
+           
+           
+           ],
+   "output": [	{
+			"scope":"store",
+			"kind":"feature",
+			"effect": "set",
+			"name":"storeName",
+			"attributeName":"value"
+		},
+		{
+			"knowledge":["o1"],
+			"effect": "communicate"
+		}
+		],
+   "quality": {
+   }
+}

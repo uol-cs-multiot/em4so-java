@@ -1,0 +1,12 @@
+{
+"type":"concept",
+"_id":"concept/low",
+"name": "low",
+"equivalent":[
+"0","FALSE"
+],
+"leadedby":"decrease",
+"makesvalid":["lowerthan","lowerequalthan"
+]
+}
+

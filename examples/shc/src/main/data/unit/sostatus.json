@@ -1,0 +1,8 @@
+{
+   "_id": "units/sostatus",
+   "type": "units",
+   "units": [
+       "running",
+       "idle"
+   ]
+}

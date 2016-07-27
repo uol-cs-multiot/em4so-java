@@ -1,0 +1,8 @@
+{
+   "_id": "accesspolicy/lookUpNearbyStores",
+   "type": "accesspolicy",
+   "resource": "lookUpNearbyStores",
+   "access": [
+       "http://127.0.0.1:8091/somanager/saf_agent"
+   ]
+}

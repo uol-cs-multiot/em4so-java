@@ -1,0 +1,8 @@
+{
+   "_id": "property/activity",
+   "type": "property",
+   "name": "activity",
+   "units": "boolean",
+   "scope":"room",
+   "kind":"feature"
+}

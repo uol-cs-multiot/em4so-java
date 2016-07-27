@@ -1,0 +1,10 @@
+{
+   "_id": "scenario/saveEnergy",
+   "type": "scenario",
+   "goal": "goals/saveEnergy",
+   "description":"scenario for achieving goal save energy",
+   "steps":
+   [{"activity":"activity/turnoff"}
+   ]
+   
+}

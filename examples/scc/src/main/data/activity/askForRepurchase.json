@@ -1,0 +1,98 @@
+{
+   "_id": "activity/askForRepurchase",
+   "type": "activity",
+   "categories": [
+       "supplies-management"
+   ],
+   "input": 
+	{
+		"knowledge": 
+		[
+			{
+				"scope": "saf_agent",
+				"kind": "resource",
+				"attrNames": 
+				[
+					"model","name"
+				]
+			},
+			{
+				"kind": "message",
+				"to":{"role":"role/storeManager"},
+				"value":"repurchase"
+				
+			}
+		],
+		"operator": "OR",
+		"operands": 
+		[
+			{
+				"operator": "<=",
+				"operand1": 
+				{
+					"scope":"home",
+					"kind": "resource",
+					"name":"home.freshener",
+					"attributeName":"level"
+				},
+
+				"operand2": 
+				{
+					"scope": "demand",
+					"kind":"resource",
+					"name":"demand.freshener",
+					"attributeName": "level"
+				}
+			},
+
+			{
+				"operator": "<=",
+				"operand1": 
+				{
+					"scope":"home",
+					"kind": "resource",
+					"name":"home.freshener",
+					"attributeName":"level"
+				},
+
+				"operand2": 
+				{
+					"value": "1"
+				}
+			}
+		]
+				
+		
+	},
+   "description": "This activity encloses the actions to ask for more resource supplies",
+   "actions": [
+       {
+           "id": "1",
+           "name": "transfer",
+           "args": [
+               {
+               		
+                   "message": {
+                       "org.mp.em4so.model.common.Element": "k2"
+                   },
+                   "property": {
+                       "org.mp.em4so.model.common.Element": "k1"
+                   }	
+               }
+           ]
+       }
+   ],
+   "output": 
+	[
+		
+		{
+			"name":"k1",
+			"scope":"home",
+			"effect": "set"
+		}
+		
+	]
+    ,
+   "quality": {
+   }
+}

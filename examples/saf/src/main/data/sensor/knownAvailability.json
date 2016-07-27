@@ -1,0 +1,10 @@
+{
+   "_id": "sensor/knownAvailability",
+   "type": "sensor",
+   "kind": "quantity",
+   "mode": "passive",
+   "property": ["knownAvailability"],
+   "status": "enabled",
+   "location": "TODO",
+   "capability": "capabilities.AvailabilitySensing"
+}

@@ -1,0 +1,66 @@
+{
+   "_id": "activity/increaseHomeDemand",
+   "type": "activity",
+   "categories": [
+       "supplies-management"
+   ],
+   "input": 
+	{
+		"knowledge": 
+		[
+			{
+				"scope": "saf_agent",
+				"kind": "resource",
+				"name":"freshener",
+				"attrNames": 
+				[
+					"model"
+				]
+			}
+		],
+
+				"operator": "==",
+				"operand1": 
+				{
+					"from": {"role":"role/supplyManager"},
+					"kind": "message"
+				},
+
+				"operand2": 
+				{
+					"value": "lowlevel"
+				}
+	
+	},
+   "description": "This activity encloses the actions to get the deposit refilled",
+   "actions": [
+       {
+           "id": "1",
+           "name": "increaseHomeDemand",
+           "args": [
+               {
+               		"model": {
+                       "java.lang.String": "k1.model"
+                   }
+               }
+           ],
+           "result":{"java.lang.String":"o1"}
+       }
+   ],
+   "output": 
+	[
+		
+		{
+			"scope":"demand",
+			"kind":"resource",
+			"effect": "increase",
+			"name":"k1.model",
+			"attributeName":"level"
+		}
+		
+	]
+   
+   ,
+   "quality": {
+   }
+}

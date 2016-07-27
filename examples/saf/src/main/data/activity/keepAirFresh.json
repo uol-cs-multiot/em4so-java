@@ -1,0 +1,44 @@
+{
+	"_id": "activity/keepAirFresh",
+	"type": "activity",
+	"categories": 
+	[
+		"air-freshener"
+	],
+	"input": {	"knowledge":[{
+				"scope": "saf_agent",
+				"name": "freshener",
+				"kind":"resource",
+				"attrNames": 
+				[ "model" ]	}],
+		"operator": "AND",
+		"operands": [{ 	"operator": ">=",
+						"operand1": {	"scope": "saf_agent",
+									"name": "freshener",
+										"kind":"resource",
+									"attributeName": "level"},
+						"operand2": { "value": "10"	}},
+								{	"operator": "==",
+									"operand1": 	{
+													"scope": "room",
+													"name": "activity",
+													"kind":"feature",
+													"attributeName": "level"},
+									"operand2": {"value": "true"}}]},
+	"description": "actions related to keep the air fresh ",
+	"actions": 	[{	"name": "spray",
+					"args": []}],
+	"output":[{		"scope": "saf_agent",
+					"name": "freshener",
+					"kind": "resource",
+					"effect": "decrease"},
+				{	"scope": "room",
+					"name": "freshness",
+					"kind": "feature",
+					"effect": "increase",
+					"attrNames":["level"]	}],
+	"quality": 
+	{
+		
+	}
+}

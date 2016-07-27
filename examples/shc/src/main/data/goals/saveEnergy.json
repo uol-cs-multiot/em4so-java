@@ -1,0 +1,11 @@
+{
+   "_id": "goals/saveEnergy",
+   "type": "goal",
+   "parent":"goals/keepWorking",
+   "priority":"3",
+   "description":"Save energy when nothing to do",
+   "status":"pending",
+   "properties": {
+       "resources": {"intendedState": "full", "achieved": "false"}
+   }
+}

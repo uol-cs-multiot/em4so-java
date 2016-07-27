@@ -1,0 +1,10 @@
+{
+   "_id": "sensor/activity",
+   "type": "sensor",
+   "kind": "movement",
+   "mode": "passive",
+   "property": ["activity"],
+   "status": "enabled",
+   "location": "TODO",
+   "capability": "capabilities.MovementDetectionSensing"
+}

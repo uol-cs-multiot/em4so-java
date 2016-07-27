@@ -1,0 +1,14 @@
+som:
+   name: saf
+   roles: role/supplyManager, role/airFreshener
+ltmemory: 
+   url: http://127.0.0.1:5984
+   kb_prefix: kbl_
+   user: admin
+   pass: password
+capabilities:
+   pkg: saf-1.0.jar
+   sense: readValue
+   categories: home-security, airquality
+transport:
+   port: 8091

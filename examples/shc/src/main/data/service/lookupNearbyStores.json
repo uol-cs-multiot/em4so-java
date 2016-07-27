@@ -1,0 +1,18 @@
+{
+   "_id": "service/lookUpNearbyStores",
+   "type": "service",
+   "categories": null,
+   "name": "lookUpNearbyStores",
+   "args": {
+       "location": "java.lang.String",
+       "model": "java.lang.String"
+   },
+   "result": null,
+   "kind": null,
+   "property": null,
+   "lastSuccess": null,
+   "capability": "capabilities.DepositManagement",
+   "local": "false",
+   "host": [{"sobject":"sobject/127.0.0.1:8092","ranking":0.5},{"sobject":"sobject/127.0.0.1:8092","ranking":0.5}]
+   
+}
