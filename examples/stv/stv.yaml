@@ -7,7 +7,7 @@ ltmemory:
    user: admin
    pass: password
 capabilities:
-   pkg: stv-1.0.jar
+   pkg: ./stv/build/libs/stv-0.1.jar
    sense: readValue
    categories: user-interface
 transport:
