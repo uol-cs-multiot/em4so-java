@@ -295,7 +295,7 @@ public class SmartObjectAgManager {
 //			List<Activity> activities = null;
 			Role queryRole = null;
 			Activity activity = null;
-			Activity previous;
+			
 
 			@Override
 			public void run() {
@@ -320,36 +320,7 @@ public class SmartObjectAgManager {
 					queryRole = new Role();
 					queryRole.setActivity(new LinkedList<Activity>());
 					for (Step step : scenario.getSteps()) {
-						role = null;
-						queryRole.getActivity().clear();
-						queryRole.getActivity().add(step.getActivity());
-						role = SODiscoverer.<Role> query(queryRole, getTTL() + 1, null);
-						LOG.debug("{}: Found role after local query: {} ", getId(), role);
-
-						if (role == null) {
-							throw new UnachievableGoalException(
-									"Role not found locally for activity: " + step.getActivity().getId());
-						} else {
-
-							activity = kbm.getActivity(step.getActivity());
-
-						
-							if (activity != null && activity.getActions() != null) { // Activity
-																						// is
-																						// carried
-																						// out
-																						// locally
-								step.setActivity(activity);
-								if (step.getActivity().getActions() != null)
-									step.getActivity()
-											.setActions(Collections.synchronizedList(step.getActivity().getActions()));
-
-								activity.setRole(role); // Local activity
-								pendingActivities.add(step.getActivity());
-							}
-
-						}
-
+						getExecutionPlan(role,queryRole,activity, pendingActivities, step);
 					}
 
 					LOG.debug("Starting cycle, there are {} pending activities.", pendingActivities.size());
@@ -357,51 +328,7 @@ public class SmartObjectAgManager {
 					//TODO change true for boolean variable to be changed when goal is achieved and the controller is shutdown
 					while (true) { 
 						lock.lock();
-						LOG.trace("+++++++++WORKING FOR GOAL++++++++++++");
-
-						if (!pendingActivities.isEmpty()) {
-							// synchronized(goals){
-							LOG.debug("{}: the goal is: {} and its status is: {}", getId(), goal.getId(),
-									goals.get(goal.getId()).getStatus());
-							LOG.debug("{}: the activity is: {} and its status is: {}", getId(),
-									pendingActivities.element().getId(), pendingActivities.element().getStatus());
-							activity = pendingActivities.element();
-							if (activity.getRole() != null) { // Role found
-
-								if (activity.getStatus() != null && !activity.getStatus().equalsIgnoreCase("done")) { // Activity
-																														// has
-																														// not
-																														// ended
-
-									if (activity.getInput() != null)
-										LOG.trace("Before evaluating activity {} : {}", activity.getId(),
-												activity.getInput().getOperator());
-
-									if (activity.getInput() != null && activity.getInput().getOperator() != null
-											&& !activity.getInput().getOperator().equals("")) { // There
-																								// is
-																								// trigger
-																								// condition
-
-										LOG.info("Evaluating activity {}", activity.getId());
-
-										if (((Boolean) re.solveFunction(activity.getInput(), kbm)).booleanValue()) { // check
-																														// trigger
-																														// condition
-											LOG.debug(" (A) To play activity: " + activity.getId());
-											pendingActivities = executeActivity(activity, previous, pendingActivities);
-										}
-									} else { // There is no trigger (input)
-												// condition
-										pendingActivities = executeActivity(activity, previous, pendingActivities);
-									}
-								}
-
-							}else{//all activities are done
-								
-							}
-
-						}
+						executeGoalActivities(goal, pendingActivities, activity);
 						lock.unlock();
 						Thread.sleep(5000L);
 					}
@@ -424,15 +351,98 @@ public class SmartObjectAgManager {
 
 	
 	/**
+	 * Check roles and activities to generate the queue of activities to execute
+	 * 
+	 * @param role
+	 * @param queryRole
+	 * @param activity
+	 * @param pendingActivities
+	 * @param step
+	 * @throws UnachievableGoalException
+	 */
+	private void getExecutionPlan(Role role,Role queryRole,Activity activity, Queue<Activity> pendingActivities, Step step)throws UnachievableGoalException {
+		role = null;
+		queryRole.getActivity().clear();
+		queryRole.getActivity().add(step.getActivity());
+		role = SODiscoverer.<Role> query(queryRole, getTTL() + 1, null);
+		LOG.debug("{}: Found role after local query: {} ", getId(), role);
+
+		if (role == null) {
+			throw new UnachievableGoalException(
+					"Role not found locally for activity: " + step.getActivity().getId());
+		} else {
+
+			activity = kbm.getActivity(step.getActivity());
+
+		
+			if (activity != null && activity.getActions() != null) { // Activity
+																		// is
+																		// carried
+																		// out
+																		// locally
+				step.setActivity(activity);
+				if (step.getActivity().getActions() != null)
+					step.getActivity()
+							.setActions(Collections.synchronizedList(step.getActivity().getActions()));
+
+				activity.setRole(role); // Local activity
+				pendingActivities.add(step.getActivity());
+			}
+
+		}
+	}
+	
+	
+	private void executeGoalActivities(Goal goal, Queue<Activity> pendingActivities, Activity activity) throws UnachievableGoalException{
+		LOG.trace("+++++++++WORKING FOR GOAL {}++++++++++++",goal.getId());
+
+		if (!pendingActivities.isEmpty()) {
+			// synchronized(goals){
+			LOG.debug("{}: the goal is: {} and its status is: {}", getId(), goal.getId(),
+					goals.get(goal.getId()).getStatus());
+			LOG.debug("{}: the activity is: {} and its status is: {}", getId(),
+					pendingActivities.element().getId(), pendingActivities.element().getStatus());
+			activity = pendingActivities.element();
+			if (activity.getRole() != null) { // Role found
+
+				if (activity.getStatus() != null && !activity.getStatus().equalsIgnoreCase("done")) { // Activity has not ended
+
+					if (activity.getInput() != null)
+						LOG.trace("Before evaluating activity {} : {}", activity.getId(),
+								activity.getInput().getOperator());
+
+					if (activity.getInput() != null && activity.getInput().getOperator() != null
+							&& !activity.getInput().getOperator().equals("")) { // There is trigger condition
+
+						LOG.info("Evaluating activity {}", activity.getId());
+
+						if (((Boolean) re.solveFunction(activity.getInput(), kbm)).booleanValue()) { // check trigger condition
+							LOG.debug(" (A) To play activity: " + activity.getId());
+							pendingActivities = executeActivity(activity, pendingActivities);
+						}
+					} else { // There is no trigger (input)
+								// condition
+						pendingActivities = executeActivity(activity, pendingActivities);
+					}
+				}
+
+			}else{//all activities are done
+				
+			}
+
+		}
+	}
+	
+	/**
 	 * Executes the activity.
 	 *
 	 * @param activity the activity
-	 * @param previous the previous
 	 * @param pendingActivities the pending activities
 	 * @return the queue
 	 * @throws UnachievableGoalException the unachievable goal exception
 	 */
-	private Queue<Activity> executeActivity(Activity activity, Activity previous, Queue<Activity> pendingActivities)throws UnachievableGoalException{
+	private Queue<Activity> executeActivity(Activity activity, Queue<Activity> pendingActivities)throws UnachievableGoalException{
+		Activity previous;
 		if (!ae.executeKnownActivity(activity)) {
 			LOG.info("{}: Completed known activity: {} with trigger condition", getId(),	activity.getId());
 			previous = pendingActivities.remove();
