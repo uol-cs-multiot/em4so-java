@@ -14,4 +14,8 @@ public class AlertManagement extends Capability {
 		LOG.info("message:"+content+userAttributes.get("message")+" displayed to user: "+userAttributes.get("name"));
 		System.out.println("message:"+content+userAttributes.get("message")+" displayed to user: "+userAttributes.get("name"));
 	}
+	
+	public void listenToTelegram(){
+		LOG.info("Listening to Telegram.....");
+	}
 }
