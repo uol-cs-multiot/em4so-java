@@ -275,12 +275,12 @@ public class SmartObjectAgManager {
 		if (g == null)
 			return;
 		if (goalsChildren.get(g.getId()) == null) {
-			LOG.debug("{}: load activities for goal: {}", getId(), g);
+			LOG.trace("{}: load activities for goal: {}", getId(), g);
 			workForGoal(g);
 		} else {
 			for (String gc : goalsChildren.get(g.getId()))
 				levelTraversal(goals.get(gc));
-			LOG.debug("{}: working for goal: {}", getId(), g);
+			LOG.trace("{}: working for goal: {}", getId(), g);
 		}
 	}
 
@@ -316,7 +316,7 @@ public class SmartObjectAgManager {
 					pendingActivities = new LinkedBlockingQueue<Activity>();
 					scenario = kbm.getScenario(goal);
 					// checkScenarioForGoal(goal);
-					LOG.debug("scenario for goal: {}, has {} steps", scenario.getId(), scenario.getSteps().size());
+					LOG.trace("scenario for goal: {}, has {} steps", scenario.getId(), scenario.getSteps().size());
 					queryRole = new Role();
 					queryRole.setActivity(new LinkedList<Activity>());
 					for (Step step : scenario.getSteps()) {
@@ -324,7 +324,7 @@ public class SmartObjectAgManager {
 						queryRole.getActivity().clear();
 						queryRole.getActivity().add(step.getActivity());
 						role = SODiscoverer.<Role> query(queryRole, getTTL() + 1, null);
-						LOG.debug("{}: Found role after local query: {} ", getId(), role);
+						LOG.trace("{}: Found role after local query: {} ", getId(), role);
 
 						if (role == null) {
 							throw new UnachievableGoalException(
@@ -352,7 +352,7 @@ public class SmartObjectAgManager {
 
 					}
 
-					LOG.debug("Starting cycle, there are {} pending activities.", pendingActivities.size());
+					LOG.trace("Starting cycle, there are {} pending activities.", pendingActivities.size());
 
 					//TODO change true for boolean variable to be changed when goal is achieved and the controller is shutdown
 					while (true) { 
@@ -361,9 +361,9 @@ public class SmartObjectAgManager {
 
 						if (!pendingActivities.isEmpty()) {
 							// synchronized(goals){
-							LOG.debug("{}: the goal is: {} and its status is: {}", getId(), goal.getId(),
+							LOG.trace("{}: the goal is: {} and its status is: {}", getId(), goal.getId(),
 									goals.get(goal.getId()).getStatus());
-							LOG.debug("{}: the activity is: {} and its status is: {}", getId(),
+							LOG.trace("{}: the activity is: {} and its status is: {}", getId(),
 									pendingActivities.element().getId(), pendingActivities.element().getStatus());
 							activity = pendingActivities.element();
 							if (activity.getRole() != null) { // Role found
@@ -388,7 +388,7 @@ public class SmartObjectAgManager {
 										if (((Boolean) re.solveFunction(activity.getInput(), kbm)).booleanValue()) { // check
 																														// trigger
 																														// condition
-											LOG.debug(" (A) To play activity: " + activity.getId());
+											LOG.trace(" (A) To play activity: " + activity.getId());
 											pendingActivities = executeActivity(activity, previous, pendingActivities);
 										}
 									} else { // There is no trigger (input)

@@ -970,7 +970,7 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 				args.put("queryType", query);
 				args.put("key", key);
 				args.put("doc", "property");
-				LOG.debug("Looking for property {}.{} ->{}", element.getScope(), element.getName(),
+				LOG.trace("Looking for property {}.{} ->{}", element.getScope(), element.getName(),
 						args.get("listType"));
 				found = cdb.queryDoc(Element.class, args);
 				}	
@@ -1036,7 +1036,7 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 				args.put("queryType", query);
 				args.put("key", key);
 				args.put("doc", "property");
-				LOG.debug("Looking for element {}.{} ->{}", element.getScope(), element.getName(),
+				LOG.trace("Looking for element {}.{} ->{}", element.getScope(), element.getName(),
 						args.get("listType"));
 				found = cdb.queryDoc(Element.class, args);
 				if (found != null && o != null) {
