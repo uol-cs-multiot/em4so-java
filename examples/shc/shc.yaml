@@ -7,7 +7,7 @@ ltmemory:
    user: admin
    pass: password
 capabilities:
-   pkg: shc-1.0.jar
+   pkg: ./shc/build/libs/shc-0.1.jar
    sense: readValue
    categories: home-security, airquality
 transport:

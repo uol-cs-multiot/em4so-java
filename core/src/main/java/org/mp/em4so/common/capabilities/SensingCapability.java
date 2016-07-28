@@ -69,18 +69,18 @@ public class SensingCapability extends Capability {
 //		String strUrl = SOMFileConfigUtils.getKBUrl()+"/"+SOMFileConfigUtils.getKBPrefix()+getSOControlAgent().getId()+ "/_design/environment/_list/currentValue/all?keys=[\""+propertyName+"\"]";
 //		RESTClientUtils c = new RESTClientUtils(SOMFileConfigUtils.getKBUser() + ":" +SOMFileConfigUtils.getKBPass() );
 //		String result = c.doGet(strUrl);
-		LOG.debug("Starting reading of {}",propertyName);
+		LOG.trace("Starting reading of {}",propertyName);
 		String result = null;
 		Element element = new Element(scope,propertyName);
-		LOG.debug("2- mid reading of {}",propertyName);
+		LOG.trace("2- mid reading of {}",propertyName);
 		element = soca.getSom().getKbm().getPropertyValue(element);
-		LOG.debug("3- end reading of {}",propertyName);
+		LOG.trace("3- end reading of {}",propertyName);
 		if(element!= null){
 			result = element.getValue();
 		}else{
 			result = "";
 		}
-		LOG.debug("Reading {}: {}",propertyName,result);
+		LOG.trace("Reading {}: {}",propertyName,result);
 		return result;
 	}
 	
