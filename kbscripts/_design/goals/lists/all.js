@@ -6,6 +6,7 @@ function (head,req) {
 							id: row.value._id,
 							description: row.value.description,
 							priority: row.value.priority,
+							goalType: row.value.goalType,
 							properties:  row.value.properties
 					};
 					if(row.value.parent != null &&  row.value.parent != "")

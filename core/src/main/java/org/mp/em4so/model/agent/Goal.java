@@ -47,8 +47,8 @@ public class Goal {
 	/** The status. */
 	private String status;
 	
-	/** The type. */
-	private String type;
+	/** The goal type. */
+	private String goalType;
 	
 	/** The id. */
 	private String id;
@@ -265,8 +265,8 @@ public class Goal {
 	 *
 	 * @return the type
 	 */
-	public String getType() {
-		return type;
+	public String getGoalType() {
+		return goalType;
 	}
 
 	/**
@@ -274,8 +274,8 @@ public class Goal {
 	 *
 	 * @param status the new type
 	 */
-	public void setType(String type) {
-		this.type = type;
+	public void setGoalType(String goalType) {
+		this.goalType = goalType;
 	}
 
 }

@@ -19,6 +19,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import org.mp.em4so.network.protocol.SODiscoverer;
 import org.mp.em4so.agents.SOControlAgent;
 import org.mp.em4so.exceptions.UnachievableGoalException;
+import org.mp.em4so.model.ModelConstants;
 import org.mp.em4so.model.actuating.Action;
 import org.mp.em4so.model.actuating.Activity;
 import org.mp.em4so.model.actuating.Capability;
@@ -251,7 +252,7 @@ public class SmartObjectAgManager {
 			}
 		}
 			
-		LOG.trace("Found {} goals and children {}", goals.size(),goalsChildren.get(rootGoalId));
+		LOG.debug("Found {} goals and children {}", goals.size(),goalsChildren.get(rootGoalId));
 		return rootGoalId;
 	}
 	
@@ -276,18 +277,12 @@ public class SmartObjectAgManager {
 		if (g == null)
 			return;
 		if (goalsChildren.get(g.getId()) == null) {
-
-			LOG.trace("{}: load activities for goal: {}", getId(), g);
-			
-			if(g.getId().equals("goals/listenToTelegramG")){
-				g.setType("MAINTENANCE");
-			}
-
+			LOG.trace("{}: load activities for goal: {} - {}", getId(), g.getId(), g.getGoalType());
 			workForGoal(g);
 		} else {
 			for (String gc : goalsChildren.get(g.getId()))
 				levelTraversal(goals.get(gc));
-			LOG.trace("{}: working for goal: {}", getId(), g);
+				LOG.trace("{}: working for goal: {}", getId(), g);
 		}
 	}
 
@@ -340,11 +335,11 @@ public class SmartObjectAgManager {
 
 					//TODO change true for boolean variable to be changed when goal is achieved and the controller is shutdown
 					while (goal.getStatus().equals(SOManagerUtils.STATUS_ONPROGRESS)) { 
-						LOG.trace("+++++++++WORKING FOR GOAL {} - {} - {} ++++++++++++",goal.getId(),goal.getStatus(),goal.getType());
+						LOG.debug("+++++++++WORKING FOR GOAL {} - {} - {} ++++++++++++",goal.getId(),goal.getStatus(),goal.getGoalType());
 						lock.lock();
 						executeGoalActivities(goal, pendingActivities, activity);
 						if(pendingActivities.isEmpty() )
-							if(goal.getType()== null || !goal.getType().equals("MAINTENANCE")) 
+							if(goal.getGoalType()== null || !goal.getGoalType().equals(ModelConstants.GOAL_TYPE_MAINTENANCE)) 
 								goal.setStatus(SOManagerUtils.STATUS_DONE);
 							else
 								pendingActivities = new LinkedBlockingQueue<Activity>(originalPendingActivities);

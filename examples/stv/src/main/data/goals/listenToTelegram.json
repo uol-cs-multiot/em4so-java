@@ -5,6 +5,7 @@
    "priority":"3",
    "description":"Listen to messages from Telegram platform",
    "status":"pending",
+   "goalType":"MAINTENANCE",
    "properties": {
        "resources": {"intendedState": "full", "achieved": "false"}
    }
