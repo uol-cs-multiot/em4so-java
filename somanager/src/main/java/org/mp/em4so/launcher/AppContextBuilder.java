@@ -23,11 +23,11 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 
-import com.almende.eve.transport.http.traceServlet;
+import com.almende.eve.transport.http.DebugServlet;
 
 
 // TODO: Auto-generated Javadoc
-//import com.almende.eve.transport.http.traceServlet;
+//import com.almende.eve.transport.http.DebugServlet;
 
 
 /**
@@ -68,12 +68,12 @@ public ServletContextHandler buildServletContextHandler(TransportConfig transpor
         
         // Add servlet
         context.setInitParams(initParams);
-//			context.addServlet(new ServletHolder(new traceServlet(new URI("http://"+myAddress+":"+SOMFileConfigUtils.getServerPort()+"/"+SOMFileConfigUtils.getName()+"/agents/"))), "/agents/*");
+//			context.addServlet(new ServletHolder(new DebugServlet(new URI("http://"+myAddress+":"+SOMFileConfigUtils.getServerPort()+"/"+SOMFileConfigUtils.getName()+"/agents/"))), "/agents/*");
         
         
         servletHolder = new ServletHolder();
         servletHolder.setInitParameters(initServletParams);
-		servletHolder.setServlet(new traceServlet());
+		servletHolder.setServlet(new DebugServlet());
         
 //        context.addServlet(servletHolder, "/"+transportConfig.getRootContext()+"/*");
 		context.addServlet(servletHolder, "/*");
