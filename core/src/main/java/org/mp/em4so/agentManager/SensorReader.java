@@ -63,9 +63,9 @@ public class SensorReader {
 			observation = null;	
 			sensingService = sensingServices.get(op.getName());
 			
-			LOG.trace("Sensing service for property {}-'{}'",op.getId(),op.getName());
+			LOG.debug("Sensing service for property {}-'{}'",op.getId(),op.getName());
 			if(sensingService!=null){
-				LOG.trace("is {} with args: {}",sensingService.getName(),sensingService.getArgTypes());
+				LOG.debug("is {} with args: {}",sensingService.getName(),sensingService.getArgTypes());
 					observation = sense(op,sensingService);	
 			}
 			

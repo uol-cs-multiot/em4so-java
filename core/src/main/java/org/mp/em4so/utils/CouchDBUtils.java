@@ -96,9 +96,9 @@ public class CouchDBUtils {
 
 		strUrl = buildQueryString(c,args);
 		
-		LOG.trace("query is ->"+strUrl);
+		LOG.debug("query is ->"+strUrl);
 		resultStr = restClient.doGet(strUrl);
-		LOG.trace("resultStr->"+resultStr);
+		LOG.debug("resultStr->"+resultStr);
 		if(resultStr!=null && !resultStr.equals("") && !resultStr.equals("null")){
 			return JSONUtils.<T>mapJsonToType(resultStr,c);
 		}else{
@@ -123,9 +123,9 @@ public class CouchDBUtils {
 
 		strUrl = buildQueryString(c,args);
 		
-		LOG.trace("query is ->"+strUrl);
+		LOG.debug("query is ->"+strUrl);
 		resultStr = restClient.doGet(strUrl);
-		LOG.trace("resultStr->"+resultStr);
+		LOG.debug("resultStr->"+resultStr);
 		if(resultStr!=null && !resultStr.equals("") && !resultStr.equals("null")){
 			return JSONUtils.<T>mapStringToObject(resultStr, c);
 		}else{
@@ -151,8 +151,8 @@ public class CouchDBUtils {
 		
 		strUrl = buildQueryString(c,args);
 		resultStr = restClient.doGet(strUrl);
-		LOG.trace("rest query"+c+"->"+strUrl);
-		LOG.trace("resultStr->"+resultStr);	
+		LOG.debug("rest query"+c+"->"+strUrl);
+		LOG.debug("resultStr->"+resultStr);	
 		if(resultStr!=null){
 			return JSONUtils.mapStringToObject(resultStr, c);
 		}else{

@@ -47,9 +47,9 @@ public String askForReading(String url)throws URISyntaxException, IOException{
 		String reading;
 		String method = "getReading";
 		URI uri = new URI(url);
-		LoggerFactory.getLogger(this.getClass()).trace("Ask for reading");
+		LoggerFactory.getLogger(this.getClass()).debug("Ask for reading");
 		reading = callSync(uri, method, null,String.class);
-		LoggerFactory.getLogger(this.getClass()).trace("Received: "+reading);
+		LoggerFactory.getLogger(this.getClass()).debug("Received: "+reading);
 		return reading;
 	}
 	
@@ -62,15 +62,15 @@ public String askForReading(String url)throws URISyntaxException, IOException{
 	public String makeDecision(String sData) {
 		String result = null;
 		if(Integer.parseInt(sData) > 300){
-			LoggerFactory.getLogger(this.getClass()).trace("ALT-1");
+			LoggerFactory.getLogger(this.getClass()).debug("ALT-1");
 			result = "ON";
 		}else{
-			LoggerFactory.getLogger(this.getClass()).trace("ALT-2");
+			LoggerFactory.getLogger(this.getClass()).debug("ALT-2");
 			result = "OFF";
 		}
 		//loop
 		this.getScheduler().schedule(Thread.currentThread().getStackTrace()[1].getMethodName(), 5000);
-		LoggerFactory.getLogger(this.getClass()).trace("Final decision is:"+result);
+		LoggerFactory.getLogger(this.getClass()).debug("Final decision is:"+result);
 		return result;
 			
 	}
@@ -88,7 +88,7 @@ public String askForReading(String url)throws URISyntaxException, IOException{
 		String urlStr = "http://localhost:8080/somanager/agents/actingAg";
 		URI url = new URI(urlStr);
 		params.put("action", action);
-		LoggerFactory.getLogger(this.getClass()).trace("Request execution: "+params);
+		LoggerFactory.getLogger(this.getClass()).debug("Request execution: "+params);
 		call(url, method, params);
 	}
 	

@@ -134,7 +134,7 @@ public class ReasoningEngine {
 		Observation o = null;
 		String equivalent = null;
 		Element foundElement = null;
-		LOG.trace(" Getting property value for: {}",element);
+		LOG.debug(" Getting property value for: {}",element);
 		if(element != null){
 			if(element.getName()!=null){
 				if(element.getAttributeName()!=null && element.getAttributeName().equals("level")){
@@ -211,7 +211,7 @@ public class ReasoningEngine {
 		Object result = null;
 		String operand1=null, operand2=null,operator = null;
 		operator = function.getOperator();
-		LOG.trace("Solving for: {} {} {} or {} operands",function.getOperand1(),operator,function.getOperand2(), function.getOperands());
+		LOG.debug("Solving for: {} {} {} or {} operands",function.getOperand1(),operator,function.getOperand2(), function.getOperands());
 
 		
 		if(function.getOperands()==null ){
@@ -225,34 +225,34 @@ public class ReasoningEngine {
 				if(function.getOperand1().getValue()!=null){
 					operand1 = function.getOperand1().getValue();
 					operand2 = getSingleMessageValue(kbm,function.getOperand2(),operand1);
-					LOG.trace("Solving if for:"+operand1+" "+operator+" "+operand2);
+					LOG.debug("Solving if for:"+operand1+" "+operator+" "+operand2);
 				}else {
 					operand2 = function.getOperand2().getValue();
 					operand1 = getSingleMessageValue(kbm,function.getOperand1(),operand2);
-					LOG.trace("Solving else 1 for:"+operand1+" "+operator+" "+operand2);
+					LOG.debug("Solving else 1 for:"+operand1+" "+operator+" "+operand2);
 				}
 			}else{
 				operand1 = getSinglePropertyValue(kbm,function.getOperand1());
 				operand2 = getSinglePropertyValue(kbm,function.getOperand2());
-				LOG.trace("Solving else 2 for operand 1 = {}: {} {} operand2 = {}: {}",function.getOperand1(),operand1, operator,function.getOperand2(), operand2);
+				LOG.debug("Solving else 2 for operand 1 = {}: {} {} operand2 = {}: {}",function.getOperand1(),operand1, operator,function.getOperand2(), operand2);
 			}
 			
 			
-			LOG.trace("P1- o1: "+operand1+" "+operator+" o2:"+operand2);
+			LOG.debug("P1- o1: "+operand1+" "+operator+" o2:"+operand2);
 			Map<String,IOperation> theMap= null;
 
 			IOperation op;
 			Operation.getInstance();
 			theMap = Operation.opByName;
-			LOG.trace("the map:"+theMap+" and operator to find->"+operator+"<- and the o1:"+operand1+" and the o2:"+operand2);
+			LOG.debug("the map:"+theMap+" and operator to find->"+operator+"<- and the o1:"+operand1+" and the o2:"+operand2);
 			op = theMap.get(operator);
-			LOG.trace("The operation:"+op);
+			LOG.debug("The operation:"+op);
 			if(op!=null){
 				result = op.calculate(operand1, operand2);
 			}else{
 				result = true;
 			}
-			LOG.trace("P1 -the result:"+result);
+			LOG.debug("P1 -the result:"+result);
 			//result = (Operation.getInstance().opByName.get(operator)).calculate(operand1, operand2);
 			LOG.trace("The result of {} {} {} is: {}",operand1,operator,operand2,result);
 		}else if(function.getOperands()!=null){
