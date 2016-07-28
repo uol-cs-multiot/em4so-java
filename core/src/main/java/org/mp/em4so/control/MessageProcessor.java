@@ -54,8 +54,8 @@ public class MessageProcessor {
 		
 		
 			message = params.get("message").asText();
-			LOG.debug("{} to process '{}' message from {}", som.getId(),message,senderUrl);
-			LOG.debug("{} params received: {}", som.getId(),params);
+			LOG.trace("{} to process '{}' message from {}", som.getId(),message,senderUrl);
+			LOG.trace("{} params received: {}", som.getId(),params);
 			switch(message){
 				
 			case "execute": {
