@@ -20,7 +20,7 @@ public interface AgentsConfigurationUtils {
 	public static String TRANSPORT_CLASS = "com.almende.eve.transport.http.HttpTransportBuilder";
 	
 	/** The servlet class. */
-	public static String SERVLET_CLASS = "com.almende.eve.transport.http.DebugServlet";
+	public static String SERVLET_CLASS = "com.almende.eve.transport.http.traceServlet";
 	
 	/** The do shortcut. */
 	public static String DO_SHORTCUT = "true";

@@ -34,6 +34,7 @@ import org.mp.em4so.model.sensing.Property;
 import org.mp.em4so.services.ServiceAssembler;
 import org.mp.em4so.services.ServiceDiscoverer;
 import org.mp.em4so.utils.SOMFileConfigUtils;
+import org.mp.em4so.utils.SOManagerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -275,12 +276,18 @@ public class SmartObjectAgManager {
 		if (g == null)
 			return;
 		if (goalsChildren.get(g.getId()) == null) {
-			LOG.debug("{}: load activities for goal: {}", getId(), g);
+
+			LOG.trace("{}: load activities for goal: {}", getId(), g);
+			
+			if(g.getId().equals("goals/listenToTelegramG")){
+				g.setType("MAINTENANCE");
+			}
+
 			workForGoal(g);
 		} else {
 			for (String gc : goalsChildren.get(g.getId()))
 				levelTraversal(goals.get(gc));
-			LOG.debug("{}: working for goal: {}", getId(), g);
+			LOG.trace("{}: working for goal: {}", getId(), g);
 		}
 	}
 
@@ -299,10 +306,12 @@ public class SmartObjectAgManager {
 
 			@Override
 			public void run() {
-				Queue<Activity> pendingActivities;
+				Queue<Activity> pendingActivities, originalPendingActivities;
 				Role role = null;
 
 				try {
+					
+				
 					LOG.info("{}: the goal is: {} and its status is: {}", getId(), goal.getId(),
 							goals.get(goal.getId()).getStatus());
 					// TODO the following line should be replaced by checking
@@ -316,19 +325,29 @@ public class SmartObjectAgManager {
 					pendingActivities = new LinkedBlockingQueue<Activity>();
 					scenario = kbm.getScenario(goal);
 					// checkScenarioForGoal(goal);
-					LOG.debug("scenario for goal: {}, has {} steps", scenario.getId(), scenario.getSteps().size());
+					LOG.trace("scenario for goal: {}, has {} steps", scenario.getId(), scenario.getSteps().size());
 					queryRole = new Role();
 					queryRole.setActivity(new LinkedList<Activity>());
 					for (Step step : scenario.getSteps()) {
 						getExecutionPlan(role,queryRole,activity, pendingActivities, step);
 					}
 
-					LOG.debug("Starting cycle, there are {} pending activities.", pendingActivities.size());
+
+					LOG.trace("Starting cycle, there are {} pending activities.", pendingActivities.size());
+
+					originalPendingActivities = new LinkedBlockingQueue<Activity>();
+					originalPendingActivities.addAll(pendingActivities);
 
 					//TODO change true for boolean variable to be changed when goal is achieved and the controller is shutdown
-					while (true) { 
+					while (goal.getStatus().equals(SOManagerUtils.STATUS_ONPROGRESS)) { 
+						LOG.trace("+++++++++WORKING FOR GOAL {} - {} - {} ++++++++++++",goal.getId(),goal.getStatus(),goal.getType());
 						lock.lock();
 						executeGoalActivities(goal, pendingActivities, activity);
+						if(pendingActivities.isEmpty() )
+							if(goal.getType()== null || !goal.getType().equals("MAINTENANCE")) 
+								goal.setStatus(SOManagerUtils.STATUS_DONE);
+							else
+								pendingActivities = new LinkedBlockingQueue<Activity>(originalPendingActivities);
 						lock.unlock();
 						Thread.sleep(5000L);
 					}
@@ -365,7 +384,7 @@ public class SmartObjectAgManager {
 		queryRole.getActivity().clear();
 		queryRole.getActivity().add(step.getActivity());
 		role = SODiscoverer.<Role> query(queryRole, getTTL() + 1, null);
-		LOG.debug("{}: Found role after local query: {} ", getId(), role);
+		LOG.trace("{}: Found role after local query: {} ", getId(), role);
 
 		if (role == null) {
 			throw new UnachievableGoalException(
@@ -394,13 +413,11 @@ public class SmartObjectAgManager {
 	
 	
 	private void executeGoalActivities(Goal goal, Queue<Activity> pendingActivities, Activity activity) throws UnachievableGoalException{
-		LOG.trace("+++++++++WORKING FOR GOAL {}++++++++++++",goal.getId());
-
 		if (!pendingActivities.isEmpty()) {
 			// synchronized(goals){
-			LOG.debug("{}: the goal is: {} and its status is: {}", getId(), goal.getId(),
+			LOG.trace("{}: the goal is: {} and its status is: {}", getId(), goal.getId(),
 					goals.get(goal.getId()).getStatus());
-			LOG.debug("{}: the activity is: {} and its status is: {}", getId(),
+			LOG.trace("{}: the activity is: {} and its status is: {}", getId(),
 					pendingActivities.element().getId(), pendingActivities.element().getStatus());
 			activity = pendingActivities.element();
 			if (activity.getRole() != null) { // Role found
@@ -417,7 +434,7 @@ public class SmartObjectAgManager {
 						LOG.info("Evaluating activity {}", activity.getId());
 
 						if (((Boolean) re.solveFunction(activity.getInput(), kbm)).booleanValue()) { // check trigger condition
-							LOG.debug(" (A) To play activity: " + activity.getId());
+							LOG.trace(" (A) To play activity: " + activity.getId());
 							pendingActivities = executeActivity(activity, pendingActivities);
 						}
 					} else { // There is no trigger (input)
@@ -427,7 +444,7 @@ public class SmartObjectAgManager {
 				}
 
 			}else{//all activities are done
-				
+				LOG.info("NO MORE ACTIVITIES TO DO");
 			}
 
 		}
