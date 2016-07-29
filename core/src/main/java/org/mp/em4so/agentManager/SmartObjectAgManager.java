@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -252,7 +253,7 @@ public class SmartObjectAgManager {
 			}
 		}
 			
-		LOG.debug("Found {} goals and children {}", goals.size(),goalsChildren.get(rootGoalId));
+		LOG.trace("Found {} goals and children {}", goals.size(),goalsChildren.get(rootGoalId));
 		return rootGoalId;
 	}
 	
@@ -335,14 +336,17 @@ public class SmartObjectAgManager {
 
 					//TODO change true for boolean variable to be changed when goal is achieved and the controller is shutdown
 					while (goal.getStatus().equals(SOManagerUtils.STATUS_ONPROGRESS)) { 
-						LOG.debug("+++++++++WORKING FOR GOAL {} - {} - {} ++++++++++++",goal.getId(),goal.getStatus(),goal.getGoalType());
+						LOG.trace("+++++++++WORKING FOR GOAL {} - {} - {} ++++++++++++",goal.getId(),goal.getStatus(),goal.getGoalType());
 						lock.lock();
 						executeGoalActivities(goal, pendingActivities, activity);
+						LOG.trace("End processing activity, remaining activities: {}",pendingActivities.size());
 						if(pendingActivities.isEmpty() )
 							if(goal.getGoalType()== null || !goal.getGoalType().equals(ModelConstants.GOAL_TYPE_MAINTENANCE)) 
 								goal.setStatus(SOManagerUtils.STATUS_DONE);
-							else
+							else{
 								pendingActivities = new LinkedBlockingQueue<Activity>(originalPendingActivities);
+								removeStatusGoalActivities(goal,pendingActivities);
+							}
 						lock.unlock();
 						Thread.sleep(5000L);
 					}
@@ -430,11 +434,11 @@ public class SmartObjectAgManager {
 
 						if (((Boolean) re.solveFunction(activity.getInput(), kbm)).booleanValue()) { // check trigger condition
 							LOG.trace(" (A) To play activity: " + activity.getId());
-							pendingActivities = executeActivity(activity, pendingActivities);
+							pendingActivities = executeActivity(goal,activity, pendingActivities);
 						}
 					} else { // There is no trigger (input)
 								// condition
-						pendingActivities = executeActivity(activity, pendingActivities);
+						pendingActivities = executeActivity(goal,activity, pendingActivities);
 					}
 				}
 
@@ -443,6 +447,7 @@ public class SmartObjectAgManager {
 			}
 
 		}
+		LOG.trace("Ending processing of activity");
 	}
 	
 	/**
@@ -453,9 +458,9 @@ public class SmartObjectAgManager {
 	 * @return the queue
 	 * @throws UnachievableGoalException the unachievable goal exception
 	 */
-	private Queue<Activity> executeActivity(Activity activity, Queue<Activity> pendingActivities)throws UnachievableGoalException{
+	private Queue<Activity> executeActivity(Goal goal,Activity activity, Queue<Activity> pendingActivities)throws UnachievableGoalException{
 		Activity previous;
-		if (!ae.executeKnownActivity(activity)) {
+		if (!ae.executeKnownActivity(goal,activity)) {
 			LOG.info("{}: Completed known activity: {} with trigger condition", getId(),	activity.getId());
 			previous = pendingActivities.remove();
 			if (!pendingActivities.isEmpty()) {
@@ -465,7 +470,33 @@ public class SmartObjectAgManager {
 		return pendingActivities;
 	}
 	
-	
+	/**
+	 * Removes all the information about status of previous executions of activities for the given goal
+	 * @param goal
+	 * @param pendingActivities
+	 */
+	private void removeStatusGoalActivities(Goal goal, Queue<Activity> pendingActivities){
+		for (Entry<String,Action> entry : getActionsStatus().entrySet()){
+		    if ((entry.getKey()).startsWith(goal.getId())) {
+		    	LOG.trace("ACTION STATUS KEY: "+entry.getKey());
+		    	getActionsStatus().remove(entry.getKey());
+		    }
+		}
+		Iterator<Activity> it = pendingActivities.iterator();
+		Iterator<Action> itaction;
+		Activity activity;
+		Action action;
+		while(it.hasNext()){
+			activity =it.next();
+			itaction = activity.getActions().iterator();
+			while(itaction.hasNext()){
+				action = itaction.next();
+				LOG.trace("Changing action status from {} to null",action.getStatus());
+				action.setStatus(null);
+			}
+		}
+		
+	}
 	
 	/**
 	 * Load my host.
