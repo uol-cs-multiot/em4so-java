@@ -13,6 +13,7 @@ import java.util.List;
 import org.mp.em4so.exceptions.UnachievableGoalException;
 import org.mp.em4so.model.actuating.Action;
 import org.mp.em4so.model.actuating.Activity;
+import org.mp.em4so.model.agent.Goal;
 import org.mp.em4so.model.agent.Role;
 import org.mp.em4so.model.common.Element;
 import org.mp.em4so.model.common.Service;
@@ -63,7 +64,7 @@ public class ActionExecutor {
 	public Action executeKnownAction(SmartObjectAgManager somanager, Activity activity,Action action)throws UnachievableGoalException{
 		Service foundService = null;
 		try{
-		LOG.info(this.somanager.getId()+": Preparing execution of known action:"+action);
+		LOG.info("{}: Preparing execution of known action: {} ",this.somanager.getId(),action);
 		foundService = action.getService();
 		foundService.setExecutionInstance(ServiceAssembler.populateExecutionInstance(action.getService()));	
 		if(foundService!= null //Only known services and execution instances
@@ -301,73 +302,73 @@ public class ActionExecutor {
 	 * @param activity the activity
 	 * @return true, if successful
 	 */
-	public boolean executeActivity(Activity activity){
-		boolean pendingWork = true;
-		boolean prerequisite = false;
-		List<Action> actions = null;
-		int j = 0;
-		Action action;
-		actions = activity.getActions();
-		Action actionStatus;
-		List<String> prereq;
-		String prer = null;
-		LOG.trace("Processing activity {} with {} actions",activity.getId(),activity.getActions());
-		while(actions!=null && actions.size() > 0 ){
-			action = actions.get(j);
-			LOG.trace(somanager.getId()+": (1)executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
-			
-			//check if status has been updated
-			actionStatus = somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId());
-			if(actionStatus!=null){
-				action.setStatus(actionStatus.getStatus());
-			}else {
-//				action.getService().setId(a.getSeq()+"."+action.getId());
-				actionStatus = action;
-				if(actionStatus.getStatus()==null){
-					actionStatus.setStatus("pending");
-				}
-				
-				addActionStatus(activity.getSeq()+"."+action.getId(), actionStatus);
-			}
+//	public boolean executeActivity(Activity activity){
+//		boolean pendingWork = true;
+//		boolean prerequisite = false;
+//		List<Action> actions = null;
+//		int j = 0;
+//		Action action;
+//		actions = activity.getActions();
+//		Action actionStatus;
+//		List<String> prereq;
+//		String prer = null;
+//		LOG.trace("Processing activity {} with {} actions",activity.getId(),activity.getActions());
+//		while(actions!=null && actions.size() > 0 ){
+//			action = actions.get(j);
+//			LOG.trace(somanager.getId()+": (1)executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+//			
+//			//check if status has been updated
+//			actionStatus = somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId());
+//			if(actionStatus!=null){
+//				action.setStatus(actionStatus.getStatus());
+//			}else {
+////				action.getService().setId(a.getSeq()+"."+action.getId());
+//				actionStatus = action;
+//				if(actionStatus.getStatus()==null){
+//					actionStatus.setStatus("pending");
+//				}
+//				
+//				addActionStatus(activity.getSeq()+"."+action.getId(), actionStatus);
+//			}
+////		
+//			LOG.trace(somanager.getId()+": (2) executing action:"+actionStatus.getService().getName()+". Status: "+actionStatus.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+//			
+//			//Pending Actions
+//			if(action.getStatus().equals("pending")){
+//				pendingWork = true;
+//			
+//			LOG.trace(somanager.getId()+": (3) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+//			prereq = action.getPrereq();
+//			LOG.trace(somanager.getId()+": (3-Inner) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId())+" prerrequisites:"+prereq);
+//			if(prereq!=null){
+//				prerequisite = false;
+//				
+//				for(String pre:prereq){
+//					prer = somanager.getActionsStatus().get(activity.getSeq()+"."+pre).getStatus();
+//					LOG.trace(somanager.getId()+": (4-Inner) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId())+" prerequiste: "+prer+ " = "+activity.getSeq()+"."+pre);
+//					if(prer != null && prer.equals("done")){
+//						prerequisite = true;
+//					}else{
+//						prerequisite = false;
+//					}
+//				}
+//				if(prerequisite) executeAction(somanager,action,activity);
+//			}else{
+//				executeAction(somanager,action,activity);
+//			}
+//			//if onprogress it doesn't do anything, just continue and the in the next run probably it's done
+//			
+//		}else if (action.getStatus().equals("onprogress")){
+//			pendingWork = true;
+//			LOG.trace(somanager.getId()+": (5) action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+//		}
+//			j++;
+//			LOG.trace(somanager.getId()+": (6) action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()) + " pendingWork:"+pendingWork);
+//		}
 //		
-			LOG.trace(somanager.getId()+": (2) executing action:"+actionStatus.getService().getName()+". Status: "+actionStatus.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
-			
-			//Pending Actions
-			if(action.getStatus().equals("pending")){
-				pendingWork = true;
-			
-			LOG.trace(somanager.getId()+": (3) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
-			prereq = action.getPrereq();
-			LOG.trace(somanager.getId()+": (3-Inner) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId())+" prerrequisites:"+prereq);
-			if(prereq!=null){
-				prerequisite = false;
-				
-				for(String pre:prereq){
-					prer = somanager.getActionsStatus().get(activity.getSeq()+"."+pre).getStatus();
-					LOG.trace(somanager.getId()+": (4-Inner) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId())+" prerequiste: "+prer+ " = "+activity.getSeq()+"."+pre);
-					if(prer != null && prer.equals("done")){
-						prerequisite = true;
-					}else{
-						prerequisite = false;
-					}
-				}
-				if(prerequisite) executeAction(somanager,action,activity);
-			}else{
-				executeAction(somanager,action,activity);
-			}
-			//if onprogress it doesn't do anything, just continue and the in the next run probably it's done
-			
-		}else if (action.getStatus().equals("onprogress")){
-			pendingWork = true;
-			LOG.trace(somanager.getId()+": (5) action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
-		}
-			j++;
-			LOG.trace(somanager.getId()+": (6) action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()) + " pendingWork:"+pendingWork);
-		}
-		
-		
-		return pendingWork;
-	}
+//		
+//		return pendingWork;
+//	}
 	
 	
 	
@@ -375,23 +376,25 @@ public class ActionExecutor {
 	/**
 	 * Execute activity defined in SO KB.
 	 *
+	 * @param goal
 	 * @param activity the activity
 	 * @return true, if successful
 	 * @throws UnachievableGoalException the unachievable goal exception
 	 */
-	public boolean executeKnownActivity(Activity activity) throws UnachievableGoalException{
+	
+	public boolean executeKnownActivity(Goal goal,Activity activity) throws UnachievableGoalException{
 		boolean pendingWork = true;
 		List<Action> actions = null;
 		actions = activity.getActions();
 		boolean [] activityStatus = new boolean[actions.size()];
 		Arrays.fill(activityStatus, false);
 		int i = 0;
-		LOG.trace("{}: ******* Start processing local activity {} with ",somanager.getId(),activity.getId());
+		LOG.trace("{}: ******* Start processing local activity {} ",somanager.getId(),activity.getId());
 		if(activity.getActions()!=null && actions.size() > 0){
 			LOG.trace("{} actions *******",activity.getActions().size());
 			for(Action action:actions){
-				LOG.trace("Ready to process action Id is:{} and Service name is {}",action.getId(),action.getService().getName());
-				activityStatus[i]=processAction(activity,action);
+				LOG.trace("Ready to process action Id is:{}, status: {} and Service name is {}",action.getId(),action.getStatus(),action.getService().getName());
+				activityStatus[i]=processAction(goal,activity,action);
 				i++;
 			}
 			for (i=0;i<activityStatus.length;i++){
@@ -458,16 +461,18 @@ public class ActionExecutor {
 	/**
 	 * Check status of the action and decides what action processing is required (execute, wait, error).
 	 *
+	 * @param goal
 	 * @param activity the activity
 	 * @param action the action
 	 * @return true, if successful
 	 * @throws UnachievableGoalException the unachievable goal exception
 	 */
-	public boolean processAction(Activity activity,Action action) throws UnachievableGoalException{
+	public boolean processAction(Goal goal,Activity activity,Action action) throws UnachievableGoalException{
 		
 	boolean pendingWork = false;
 		Action actionStatus = null;
-		
+		String statusKey = null;
+				
 		LOG.trace("{} : (1) Start executing action: {} with status: ->{} / {} <- and service: id: ->{}<-, name: ->{}<-", 
 				somanager.getId(),
 				action.getId(),
@@ -478,7 +483,10 @@ public class ActionExecutor {
 				);
 		
 		//check if status has been updated
-				actionStatus = somanager.getActionsStatus().get(activity.getId()+"."+activity.getSeq()+"."+action.getId());
+				statusKey = goal.getId()+"."+activity.getId()+"."+activity.getSeq()+"."+action.getId();
+				actionStatus = somanager.getActionsStatus().get(statusKey);
+				LOG.trace("ACTION STATUS KEY:{} AND VALUE: {}", statusKey,actionStatus);
+
 				if(actionStatus!=null){
 					action.setStatus(actionStatus.getStatus());
 				}else {
@@ -486,7 +494,7 @@ public class ActionExecutor {
 					if(actionStatus.getStatus()==null){
 						actionStatus.setStatus("pending");
 					}
-					action.getService().setStatusKey(activity.getId()+"."+activity.getSeq()+"."+action.getId());
+					action.getService().setStatusKey(statusKey);
 					addActionStatus(action.getService().getStatusKey(), actionStatus);
 					
 				}
@@ -594,6 +602,7 @@ public class ActionExecutor {
 	 * @param action the action
 	 */
 	public void addActionStatus(String fullSequence, Action action){
+		LOG.trace("Added action status for: {} ",fullSequence);
 		somanager.getActionsStatus().put(fullSequence, action);
 	}
 	
