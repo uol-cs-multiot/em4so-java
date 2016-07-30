@@ -281,7 +281,7 @@ public class ActionExecutor {
 			//replace value scope with output
 			if(element.getScope()!=null){
 				 for(Element output:outputKnowledge){
-					if(output.getName()!=null && output.getName().equals("k"+elementId)){
+					if(output.getName()!=null && output.getName().equals("%i"+elementId)){
 						element.setScope(output.getScope());
 						LOG.trace("Set scope from {} to {}",element.getScope(),output.getScope());
 					}
