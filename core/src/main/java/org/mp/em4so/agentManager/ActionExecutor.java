@@ -212,16 +212,16 @@ public class ActionExecutor {
 			while(it.hasNext()){
 				key = it.next();
 				value = action.getArgValues().get(key).toString();
-				
-				if(value.startsWith("k")) // this argument comes from input knowledege list
-					knowledgeList = inputKnowledge;
-				else if (value.startsWith("o")) // this argument comes from output knowledege list
-					knowledgeList = outputKnowledge;
-				
-				value = value.substring(1,value.length());
-				LOG.trace("To get knowledge item {} order ={}",value, key);
-				
-				newArgValues = getKnowledgeItemForService(knowledgeList, value, action, key, outputKnowledge,newArgValues);
+				if(value.startsWith("%")){
+					if(value.startsWith("%i")) // this argument comes from input knowledege list
+						knowledgeList = inputKnowledge;
+					else if (value.startsWith("%o")) // this argument comes from output knowledege list
+						knowledgeList = outputKnowledge;
+					value = value.substring(2,value.length());
+					LOG.trace("To get knowledge item {} order ={}",value, key);
+					newArgValues = getKnowledgeItemForService(knowledgeList, value, action, key, outputKnowledge,newArgValues);
+				}else 
+					newArgValues.put(key,value);
 			}
 			
 			if(newArgValues.size()>0){
