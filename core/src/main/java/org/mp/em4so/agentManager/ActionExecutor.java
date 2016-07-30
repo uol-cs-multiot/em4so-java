@@ -148,14 +148,14 @@ public class ActionExecutor {
 		LOG.trace(" The result will go to: {}",action);
 		if(action.getResult()!=null && activity.getOutput()!=null && !activity.getOutput().isEmpty()){
 			
-			indexO = Integer.parseInt(action.getResult().substring(1, action.getResult().length()))-1;
+			indexO = Integer.parseInt(action.getResult().substring(2, action.getResult().length()))-1;
 			
 			LOG.trace("To get knowledge index {}",indexO);
 			element = activity.getOutput().get(indexO);
 			LOG.trace("To get output element {}",element);
 			if(element!= null && element.getName()!=null && element.getScope()!=null && element.getAttributeName()!=null && element.getKind()!=null){
 				if(element.getName().contains(".")){
-					indexI = Integer.parseInt(element.getName().substring(1, element.getName().indexOf(".")))-1;
+					indexI = Integer.parseInt(element.getName().substring(2, element.getName().indexOf(".")))-1;
 					attribute = element.getName().substring(element.getName().indexOf(".")+1,element.getName().length());
 					
 					LOG.trace("To get knowledge index {} from {}",indexI,activity.getInputKnowledge().size());
