@@ -39,8 +39,8 @@
    			"id": "1",
            "name": "notifyUser",
            "args": [
-           			{ "content": {"java.lang.String": "k2.value" } },
-                  	{"user": {"org.mp.em4so.model.common.Element": "k3" } }
+           			{ "content": {"java.lang.String": "%i2.value" } },
+                  	{"user": {"org.mp.em4so.model.common.Element": "%i3" } }
                   ]
     } 
                         

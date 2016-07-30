@@ -50,10 +50,10 @@
                {
                		
                    "msg": {
-                      "org.mp.em4so.model.common.Element":"k2" 
+                      "org.mp.em4so.model.common.Element":"%i2" 
                    },
                    "property": {
-                       "org.mp.em4so.model.common.Element": "k1"
+                       "org.mp.em4so.model.common.Element": "%i1"
                    }
                }
            ]
@@ -63,7 +63,7 @@
 	[
 		
 		{
-			"knowledge":["k1"],
+			"knowledge":["%i1"],
 			"effect": "communicate"
 		}
 		

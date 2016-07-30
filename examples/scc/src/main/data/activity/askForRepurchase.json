@@ -73,10 +73,10 @@
                {
                		
                    "message": {
-                       "org.mp.em4so.model.common.Element": "k2"
+                       "org.mp.em4so.model.common.Element": "%i2"
                    },
                    "property": {
-                       "org.mp.em4so.model.common.Element": "k1"
+                       "org.mp.em4so.model.common.Element": "%i1"
                    }	
                }
            ]
@@ -86,7 +86,7 @@
 	[
 		
 		{
-			"name":"k1",
+			"name":"%i1",
 			"scope":"home",
 			"effect": "set"
 		}
