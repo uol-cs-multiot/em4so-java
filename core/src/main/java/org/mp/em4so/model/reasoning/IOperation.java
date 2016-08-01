@@ -10,15 +10,6 @@ package org.mp.em4so.model.reasoning;
  *
  * @param <T> the generic type
  */
-public interface IOperation<T> {
-	
-	/**
-	 * Calculate.
-	 *
-	 * @param x the x
-	 * @param y the y
-	 * @return the t
-	 */
-	public T calculate(Object x, Object y);
-
+public interface IOperation {
+	public boolean calculateBoolean(String... x);
 }

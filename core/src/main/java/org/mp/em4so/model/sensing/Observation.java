@@ -7,6 +7,8 @@ package org.mp.em4so.model.sensing;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.mp.em4so.model.common.CommonConstants;
+
 
 
 
@@ -37,7 +39,7 @@ public class Observation{
 	private SimpleDateFormat sdf;
 	
 	/** The default date pattern. */
-	private final String defaultDatePattern = "YYYY-MM-dd'T'HH:mm:ss.SSS";
+	private final String defaultDatePattern = CommonConstants.defaultDateTimeFormat;
 
 	/**
 	 * Instantiates a new observation.
@@ -133,6 +135,17 @@ public class Observation{
 	public String getTime(String formatPattern) {
 		sdf.applyPattern(formatPattern);
 		return sdf.format(this.getTime());
+	}
+	
+	/**
+	 * Gets the time in String with the default format.
+	 *
+	 * @param formatPattern the format pattern
+	 * @return the time
+	 */
+	public String getStringTime() {
+		sdf.applyPattern(defaultDatePattern);
+		return sdf.format(this.getTime()).toString();
 	}
 
 	/**

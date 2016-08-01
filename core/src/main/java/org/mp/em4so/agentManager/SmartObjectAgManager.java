@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import org.mp.em4so.network.protocol.SODiscoverer;
 import org.mp.em4so.agents.SOControlAgent;
+import org.mp.em4so.behaviour.reasoning.ReasoningEngine;
 import org.mp.em4so.exceptions.UnachievableGoalException;
 import org.mp.em4so.model.ModelConstants;
 import org.mp.em4so.model.actuating.Action;
@@ -432,7 +433,7 @@ public class SmartObjectAgManager {
 
 						LOG.info("Evaluating activity {}", activity.getId());
 
-						if (((Boolean) re.solveFunction(activity.getInput(), kbm)).booleanValue()) { // check trigger condition
+						if (((Boolean) re.solveBooleanFunction(activity.getInput(), kbm)).booleanValue()) { // check trigger condition
 							LOG.trace(" (A) To play activity: " + activity.getId());
 							pendingActivities = executeActivity(goal,activity, pendingActivities);
 						}
