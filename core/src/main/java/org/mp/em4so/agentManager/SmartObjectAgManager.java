@@ -477,12 +477,17 @@ public class SmartObjectAgManager {
 	 * @param pendingActivities
 	 */
 	private void removeStatusGoalActivities(Goal goal, Queue<Activity> pendingActivities){
+		List<String> keysToRemove = new LinkedList<String>();
 		for (Entry<String,Action> entry : getActionsStatus().entrySet()){
 		    if ((entry.getKey()).startsWith(goal.getId())) {
 		    	LOG.trace("ACTION STATUS KEY: "+entry.getKey());
-		    	getActionsStatus().remove(entry.getKey());
+		    	keysToRemove.add(entry.getKey());
 		    }
 		}
+		for(String key:keysToRemove){
+			getActionsStatus().remove(key);
+		}
+		keysToRemove = null;
 		Iterator<Activity> it = pendingActivities.iterator();
 		Iterator<Action> itaction;
 		Activity activity;
