@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mp.em4so.exceptions.DocNotSpecifiedException;
+import org.mp.em4so.model.ModelConstants;
 import org.mp.em4so.model.actuating.Action;
 import org.mp.em4so.model.actuating.Activity;
 import org.mp.em4so.model.actuating.ExecutionInstance;
@@ -1001,7 +1002,7 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 
 			if (element != null) {
 				args = new Hashtable<String, Object>();
-
+				
 				args.put("reduce", "false");
 				args.put("group", "false");
 				query = "by_sco";
@@ -1016,19 +1017,33 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 				}
 
 				if (element.getAttributeName() != null) {
-					args.put("listType", "single");
-					key += ",\"" + element.getAttributeName() + "\"";
-					query += "_attr";
-				} else if (element.getAttrNames() != null) {
-					args.put("listType", "multi_attribute");
-					params = new LinkedList<String>();
-					for (int i = 0; i < element.getAttrNames().length; i++) {
-						params.add(element.getAttrNames()[i]);
-						if (element.getAttrNames()[i].equals("level")) {
+					if (element.getAttributeName().equals(ModelConstants.PROPERTY_VALUE) || //Getting Observation in case of these properties
+							element.getAttributeName().equals(ModelConstants.PROPERTY_TIME)	||
+							element.getAttributeName().equals(ModelConstants.PROPERTY_SENSOR) ) {
 							o = getRecentObservation(element.getName());
+						}else{
+							args.put("listType", "single");  //To query single attribute in any other case
+							key += ",\"" + element.getAttributeName() + "\"";
+							query += "_attr";
+						}
+				} else if (element.getAttrNames() != null) {
+					
+					for (int i = 0; i < element.getAttrNames().length; i++) {
+						if (element.getAttrNames()[i].equals(ModelConstants.PROPERTY_VALUE) ||  //Getting Observation in case of these properties
+							element.getAttrNames()[i].equals(ModelConstants.PROPERTY_TIME)	||
+							element.getAttrNames()[i].equals(ModelConstants.PROPERTY_SENSOR) ) {
+							if(o!=null)
+								o = getRecentObservation(element.getName());
+						}else{ //To query single attribute in any other case
+							if(params==null){  
+								args.put("listType", "multi_attribute");
+								params = new LinkedList<String>();
+							}
+							params.add(element.getAttrNames()[i]);
 						}
 					}
-					args.put("params1", params);
+					if(params!=null)
+						args.put("params1", params);
 				} 
 				
 				key += "]";
@@ -1039,10 +1054,17 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 				LOG.trace("Looking for element {}.{} ->{}", element.getScope(), element.getName(),
 						args.get("listType"));
 				found = cdb.queryDoc(Element.class, args);
-				if (found != null && o != null) {
-					if (found.getAttributes().equals(null))
-						found.setAttributes(new HashMap<String, String>());
-					found.getAttributes().put("level", levelValue);
+				
+				LOG.trace("Element found: {}",found);
+				
+				if(found==null) found = element; 
+
+				if (found.getAttributes()==null)
+					found.setAttributes(new HashMap<String, String>());
+				if(o!=null){
+					found.getAttributes().put(ModelConstants.PROPERTY_VALUE, o.getValue());
+					found.getAttributes().put(ModelConstants.PROPERTY_TIME, o.getStringTime());
+					found.getAttributes().put(ModelConstants.PROPERTY_SENSOR, o.getSensor().getId());
 				}
 
 			}
