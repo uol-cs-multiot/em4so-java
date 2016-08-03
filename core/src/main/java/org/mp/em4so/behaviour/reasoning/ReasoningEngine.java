@@ -135,51 +135,31 @@ public class ReasoningEngine {
 	 */
 	public String getSinglePropertyValue(KnowledgeBaseManager kbm,Element element){
 		String value = null;
-		Observation o = null;
 		String equivalent = null;
 		Element foundElement = null;
 		LOG.trace(" Getting property value for: {}",element);
-		if(element != null){
-			if(element.getName()!=null){
-				if(element.getAttributeName()!=null )
-					o = kbm.getRecentObservation(element.getName());
-					if(o!=null){
-						switch(element.getAttributeName()){
-							case ModelConstants.PROPERTY_VALUE:{ //Sensed Value
-								value = o.getValue();
-							}
-							break;
-							case ModelConstants.PROPERTY_TIME:{ // Time sensed
-								value = o.getStringTime();
-							}
-							break;
-							case ModelConstants.PROPERTY_SENSOR:{ // Sensor used
-								value = o.getSensor().getId();
-							}
-							break;
-						}
-					}
-				else{
+		if(element != null && element.getName()!=null && element.getScope()!=null && element.getKind()!=null){
 						foundElement = kbm.getElement(element); 
 						if(foundElement!= null){
-							value = element.getValue();
+							value = foundElement.getValue();
+							LOG.trace("Found value is: {}", value);
 						}else{
 							LOG.trace("Entering to get Equivalences");
 							//TODO To complete identification of equivalent properties among different SOs 
 							equivalent = getKnowledgeElement(kbm,"type",element.getScope());
 							element.setScope(equivalent);
 							value = getSinglePropertyValue(kbm,element);
+							LOG.trace("Equivalent found value is: {}", value);
 							}
-				}
 	
 				
 			}else if(element.getValue()!=null){
 				value = element.getValue();
+				LOG.trace("Given value is: {}", value);
 			}
 				
-		}
 		
-		if (value!=null && (value.equals("null")|| value.equals(""))) value = null;
+			if (value!=null && (value.equals("null")|| value.equals(""))) value = null;
 		return value;
 	}
 	

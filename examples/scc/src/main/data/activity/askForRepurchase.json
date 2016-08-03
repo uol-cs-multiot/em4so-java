@@ -33,7 +33,7 @@
 					"scope":"home",
 					"kind": "resource",
 					"name":"home.freshener",
-					"attributeName":"level"
+					"attributeName":"value"
 				},
 
 				"operand2": 
@@ -52,7 +52,7 @@
 					"scope":"home",
 					"kind": "resource",
 					"name":"home.freshener",
-					"attributeName":"level"
+					"attributeName":"value"
 				},
 
 				"operand2": 
