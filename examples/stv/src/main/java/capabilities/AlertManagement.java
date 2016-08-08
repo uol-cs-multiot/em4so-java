@@ -1,6 +1,7 @@
 package capabilities;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.mp.em4so.model.actuating.Capability;
@@ -13,56 +14,71 @@ import com.pengrad.telegrambot.request.GetUpdates;
 public class AlertManagement extends Capability
 {
 
-	private TelegramBot bot;
+	// private TelegramBot BOT;
 	private int lastUpdateId;
+
+	/** Telegram */
+	protected final TelegramBot BOT = TelegramBotAdapter.build("<TOKEN>");
+
+	public enum Interaction
+	{
+		TEMPEARATURE, MOTION;
+	}
 
 	public enum Action
 	{
-		REGISTER, DEREGISTER, INTERACTION, SEND_MESSAGE
-	};
+		REGISTER, DEREGISTER, SEND_MESSAGE, ERROR, INTERACTION
+	}
 
+	private Action action;
 	public List<Long> users;
 
-	/*
-	 * public void notifyUser(String content, Element user) { HashMap<String,
-	 * String> userAttributes = user.getAttributes(); LOG.info("message:" +
-	 * content + userAttributes.get("message") + " displayed to user: " +
-	 * userAttributes.get("name")); System.out.println("message:" + content +
-	 * userAttributes.get("message") + " displayed to user: " +
-	 * userAttributes.get("name")); }
-	 */
-
-	public void listenerTelegram(String msg)
+	public AlertManagement()
 	{
-		System.out.println(
-				")))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))");
-		LOG.trace("-- IN THE METHOD NOTIFYUSER --");
-		bot = TelegramBotAdapter.build("262473126:AAGF5zvWXpssuP-SkedQkGUdbdn16A-sRiQ");
-		lastUpdateId = 662306098;
+		super();
+		lastUpdateId = 662306126 + 1;
+		LOG.trace("In AlertManagement constructor");
 		users = new ArrayList<Long>();
 		users.add(new Long(224322144));
+	}
 
-		Update update = bot.execute(new GetUpdates().limit(0).offset((int) lastUpdateId).timeout(0)).updates().get(0);
-		boolean hasUpdate = (update == null ? true : false);
-		LOG.info("Listener --> has update : " + hasUpdate);
-		if (update != null)
+	public void notifyUser(String content, Element user)
+	{
+		HashMap<String, String> userAttributes = user.getAttributes();
+		LOG.info("message:" + content + userAttributes.get("message") + " displayed to user: "
+				+ userAttributes.get("name"));
+		System.out.println("message:" + content + userAttributes.get("message") + " displayed to user: "
+				+ userAttributes.get("name"));
+	}
+
+	public void listenToTelegram()
+	{
+
+		List<Update> updates = BOT.execute(new GetUpdates().limit(100).offset((int) lastUpdateId).timeout(0)).updates();
+		LOG.trace("taille liste update : " + updates.size());
+		lastUpdateId = updates.get(updates.size() - 1).updateId() + 1;
+		LOG.trace("LASTUDPATEID " + lastUpdateId);
+		for (Update update : updates)
 		{
-			lastUpdateId = update.updateId() + 1;
+			LOG.trace(update.message().chat().id() + " send a new message : '" + update.message().text()
+					+ "', update id : " + update.updateId());
+			System.out.println(update.message().chat().id() + " send a new message : '" + update.message().text()
+					+ "', update id : " + update.updateId());
 
-			// DISPATCHER
-			switch (textToAction(update.message().text()))
+			// Dispatcher
+			switch (action = textToAction(update.message().text()))
 			{
-				case REGISTER:
-					System.out.println("Register");
-					break;
 				case DEREGISTER:
 					System.out.println("Deregister");
+					break;
+				case REGISTER:
+					System.out.println("Register");
 					break;
 				case INTERACTION:
 					System.out.println("Interaction");
 					break;
 				default:
-					System.err.println("ERROR : Unknow message");
+					System.out.println("Error");
 			}
 		}
 	}
@@ -73,8 +89,9 @@ public class AlertManagement extends Capability
 			return Action.DEREGISTER;
 		else if (message.toLowerCase().contains("register"))
 			return Action.REGISTER;
-		return Action.INTERACTION;
+		else if (message.toLowerCase().contains("interaction"))
+			return Action.INTERACTION;
+		return Action.ERROR;
 	}
-
 
 }

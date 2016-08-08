@@ -42,7 +42,7 @@ public boolean evaluate(Map<String,Belief> current,Map<String, Belief> desirable
 	// --in terms of the beliefs existing in KB-- are defined.
 	
 	boolean result;
-	//logger.debug(conditionData);
+	//logger.trace(conditionData);
 	result = true;
 	Belief currentBelief, desirableBelief;
 	String bKey;

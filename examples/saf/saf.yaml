@@ -7,7 +7,7 @@ ltmemory:
    user: admin
    pass: password
 capabilities:
-   pkg: saf-1.0.jar
+   pkg: ./saf/build/libs/saf-0.1.jar
    sense: readValue
    categories: home-security, airquality
 transport:

@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.mp.em4so.exceptions.DocNotSpecifiedException;
+import org.mp.em4so.model.ModelConstants;
 import org.mp.em4so.model.actuating.Action;
 import org.mp.em4so.model.actuating.Activity;
 import org.mp.em4so.model.actuating.ExecutionInstance;
@@ -970,7 +971,7 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 				args.put("queryType", query);
 				args.put("key", key);
 				args.put("doc", "property");
-				LOG.debug("Looking for property {}.{} ->{}", element.getScope(), element.getName(),
+				LOG.trace("Looking for property {}.{} ->{}", element.getScope(), element.getName(),
 						args.get("listType"));
 				found = cdb.queryDoc(Element.class, args);
 				}	
@@ -993,7 +994,7 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 		Element found = null;
 		Hashtable<String, Object> args = null;
 		List<String> params = null;
-		String levelValue = null;
+
 		Observation o = null;
 		String query = null;
 		String key = null;
@@ -1001,7 +1002,93 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 
 			if (element != null) {
 				args = new Hashtable<String, Object>();
+				
+				args.put("reduce", "false");
+				args.put("group", "false");
+				query = "by_sco";
+				key = "[\"" + element.getScope() + "\"";
 
+				if (element.getName() != null) {
+					query += "_prop";
+					key += ",\"" + element.getName() + "\"";
+				} else if (element.getKind() != null) {
+					query += "_kind";
+					key += ",\"" + element.getKind() + "\"";
+				}
+
+				if (element.getAttrNames() != null) {
+					
+					for (int i = 0; i < element.getAttrNames().length; i++) {
+						if (element.getAttrNames()[i].equals(ModelConstants.PROPERTY_VALUE) ||  //Getting Observation in case of these properties
+							element.getAttrNames()[i].equals(ModelConstants.PROPERTY_TIME)	||
+							element.getAttrNames()[i].equals(ModelConstants.PROPERTY_SENSOR) ) {
+							if(o!=null)
+								o = getRecentObservation(element.getName());
+						}else{ //To query attributes in any other case
+							if(params==null){  
+								args.put("listType", "multi_attribute");
+								params = new LinkedList<String>();
+							}
+							params.add(element.getAttrNames()[i]);
+						}
+					}
+					if(params!=null)
+						args.put("params1", params);
+				} 
+				
+				key += "]";
+				
+				args.put("queryType", query);
+				args.put("key", key);
+				args.put("doc", "property");
+				LOG.trace("Looking for element {}.{} ->{}", element.getScope(), element.getName(),
+						args.get("listType"));
+				found = cdb.queryDoc(Element.class, args);
+				
+				LOG.trace("Element found: {}",found);
+				
+				if(found==null) found = element; 
+				
+				if(element.getAttributes()!=null && !element.getAttributes().isEmpty()){
+					if (found.getAttributes()==null)
+						found.setAttributes(new HashMap<String, String>());
+					if(o!=null){
+						found.getAttributes().put(ModelConstants.PROPERTY_VALUE, o.getValue());
+						found.getAttributes().put(ModelConstants.PROPERTY_TIME, o.getStringTime());
+						found.getAttributes().put(ModelConstants.PROPERTY_SENSOR, o.getSensor().getId());
+					}
+				}
+				
+				
+
+			}
+		} catch (DocNotSpecifiedException e) {
+			// TODO Auto-generated catch block
+			LOG.error(e.getMessage(), e);
+		}
+		return found;
+	}
+	
+	
+	/**
+	 * Gets the single value of an element.
+	 *
+	 * @param element the element
+	 * @return the element value
+	 */
+	public Element getSingleElementValue(Element element) {
+		Element found = null;
+		Hashtable<String, Object> args = null;
+		List<String> params = null;
+		boolean valueFound = false;
+		Observation o = null;
+		String query = null;
+		String key = null;
+		try {
+
+			if (element != null) {
+				args = new Hashtable<String, Object>();
+				
 				args.put("reduce", "false");
 				args.put("group", "false");
 				query = "by_sco";
@@ -1016,34 +1103,52 @@ public <T> List<T>  getDocuments(Class<T> clazz, String document,String query,St
 				}
 
 				if (element.getAttributeName() != null) {
-					args.put("listType", "single");
-					key += ",\"" + element.getAttributeName() + "\"";
-					query += "_attr";
-				} else if (element.getAttrNames() != null) {
-					args.put("listType", "multi_attribute");
-					params = new LinkedList<String>();
-					for (int i = 0; i < element.getAttrNames().length; i++) {
-						params.add(element.getAttrNames()[i]);
-						if (element.getAttrNames()[i].equals("level")) {
+					if (element.getAttributeName().equals(ModelConstants.PROPERTY_VALUE) || //Getting Observation in case of these properties
+							element.getAttributeName().equals(ModelConstants.PROPERTY_TIME)	||
+							element.getAttributeName().equals(ModelConstants.PROPERTY_SENSOR) ) {
 							o = getRecentObservation(element.getName());
+							if(o!=null){
+								found = element;
+								switch(element.getAttributeName()){
+									case ModelConstants.PROPERTY_VALUE:{
+										found.setValue(o.getValue());
+										valueFound = true;
+										break;
+									}
+									case ModelConstants.PROPERTY_TIME:{
+										found.setValue(o.getStringTime());
+										valueFound = true;
+										break;
+									}
+									case ModelConstants.PROPERTY_SENSOR:{
+										found.setValue(o.getSensor().getId());
+										valueFound = true;
+										break;
+									}
+								}
+							}
+							
 						}
-					}
-					args.put("params1", params);
+					
+						if(!valueFound){
+							args.put("listType", "single");  //To query single attribute 
+							key += ",\"" + element.getAttributeName() + "\"";
+							query += "_attr";
+							key += "]";
+							
+							args.put("queryType", query);
+							args.put("key", key);
+							args.put("doc", "property");
+							LOG.trace("Looking for element {}.{} ->{}", element.getScope(), element.getName(),
+									args.get("listType"));
+							found = cdb.queryDoc(Element.class, args);
+						}
 				} 
+		
+				LOG.trace("Element found: {}",found);
 				
-				key += "]";
+				if(found==null) found = element; 
 				
-				args.put("queryType", query);
-				args.put("key", key);
-				args.put("doc", "property");
-				LOG.debug("Looking for element {}.{} ->{}", element.getScope(), element.getName(),
-						args.get("listType"));
-				found = cdb.queryDoc(Element.class, args);
-				if (found != null && o != null) {
-					if (found.getAttributes().equals(null))
-						found.setAttributes(new HashMap<String, String>());
-					found.getAttributes().put("level", levelValue);
-				}
 
 			}
 		} catch (DocNotSpecifiedException e) {

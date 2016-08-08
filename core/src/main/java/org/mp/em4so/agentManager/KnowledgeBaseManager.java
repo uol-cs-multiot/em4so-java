@@ -492,8 +492,10 @@ public HashMap<String,Host> getCategoryProviders(Service service, List<String> a
 	public Element getElement(Element element){
 		Element found = null;
 		try{
-			
-			found =  memManager.getElement(element);
+			if(element.getAttributeName()!=null)
+				found = memManager.getSingleElementValue(element);
+			else 
+				found =  memManager.getElement(element);
 			}catch(Exception e){
 				LOG.error(e.getMessage(),e);
 			}

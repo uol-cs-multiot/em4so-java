@@ -1,0 +1,21 @@
+{   "_id": "activity/listenToTelegram",
+   "type": "activity",
+   "categories": [
+       "user-interface"
+   ],
+   "input":	{},
+   "description": "actions to listen messages from Telegram",
+   "actions": [
+   
+    { 
+   			"id": "1",
+           "name": "listenToTelegram",
+           "args": []
+    } 
+                        
+           ],
+   "output": [	
+		],
+   "quality": {
+   }
+}

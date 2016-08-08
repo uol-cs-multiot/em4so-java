@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 /**
  * The Class Operation.
  */
-@SuppressWarnings("rawtypes")
+
 public class Operation {
 	
 	/** The Constant LOG. */
@@ -22,7 +22,7 @@ public class Operation {
 			.getName());
 	
 	/** The Constant opByName. */
-	public static final Map<String,IOperation> opByName = new HashMap<String,IOperation>();
+	public static final Map<String,Operator> opByName = new HashMap<String,Operator>();
 	
 	/** The operation. */
 	private static Operation operation;
@@ -31,14 +31,23 @@ public class Operation {
 	 * Instantiates a new operation.
 	 */
 	Operation(){
+		//These are only comparison operations to determine whether to trigger an action or not. They always return boolean value.
 		
-		Operation.opByName.put("AND", new And<Boolean>());
-		Operation.opByName.put("OR", new Or<Boolean>());
-		Operation.opByName.put(">", new BiggerThan<Boolean>());
-		Operation.opByName.put(">=", new BiggerEqualsTo<Boolean>());
-		Operation.opByName.put("<=", new SmallerEqualsTo<Boolean>());
-		Operation.opByName.put("<", new SmallerThan<Boolean>());
-		Operation.opByName.put("==", new EqualsTo<Boolean>());
+		
+		//basic logic
+		Operation.opByName.put("AND", new And());
+		Operation.opByName.put("OR", new Or());
+		Operation.opByName.put("XOR", new Xor()); 
+		Operation.opByName.put("NOT", new Not()); 
+		
+		//comparison
+		Operation.opByName.put(">", new BiggerThan());
+		Operation.opByName.put(">=", new BiggerEqualsTo());
+		Operation.opByName.put("<=", new SmallerEqualsTo());
+		Operation.opByName.put("<", new SmallerThan());
+		Operation.opByName.put("==", new EqualsTo());
+		Operation.opByName.put("!=", new NotEqualsTo()); 
+		
 		LOG.trace(" The table is"+opByName);
 	
 	}
@@ -59,171 +68,141 @@ public class Operation {
 	
 }
 
-class And<T> implements IOperation<T>{
-	private static final Logger LOG = LoggerFactory.getLogger(And.class.getSimpleName());
-	Boolean x;
-	Boolean y;
-	Boolean result;
+class And extends Operator {
+
 	@Override
-	@SuppressWarnings("unchecked")
-	public T calculate(Object x, Object y) {
-		if(x!=null)
-			this.x = (Boolean)x;
-		if(y!=null)
-			this.y = (Boolean)y;
-		LOG.trace("Calculating.. "+x+" "+this.getClass().getSimpleName()+" "+y);
-		if(x!=null && !x.equals("null") && y!=null && !y.equals("null"))
-			result = this.x.booleanValue() && this.y.booleanValue();
-		else
-			result = null;
-		LOG.trace("Result is:"+result);
-		return (T)result;
+	public boolean calculateBoolean(String... x) {
+		return Boolean.logicalAnd(Boolean.parseBoolean(x[0]),Boolean.parseBoolean(x[1]));
 	}
-	
 }
 
-class Or<T> implements IOperation<T>{
-	private static final Logger LOG = LoggerFactory.getLogger(Or.class.getSimpleName());
-	Boolean x;
-	Boolean y;
-	Boolean result;
+class Or extends Operator {
 	@Override
-	@SuppressWarnings("unchecked")
-	public T calculate(Object x, Object y) {
-		if(x!=null)
-			this.x = (Boolean)x;
-		if(y!=null)	
-			this.y = (Boolean)y;
-		LOG.trace("Calculating.. "+x+" "+this.getClass().getSimpleName()+" "+y);
-		if(x!=null && !x.equals("null") && y!=null && !y.equals("null"))
-			result = this.x.booleanValue() || this.y.booleanValue();
-		else
-			result = false;
-		LOG.trace("Result is:"+result);
-		return (T)result;
-		
+	public boolean calculateBoolean(String... x) {
+		return Boolean.logicalOr(Boolean.parseBoolean(x[0]),Boolean.parseBoolean(x[1]) );
 	}
-	
-}
-	
-class BiggerThan<T> implements IOperation<T>{
-	private static final Logger LOG = LoggerFactory.getLogger(BiggerThan.class.getSimpleName());
-	Long x;
-	Long y;
-	Boolean result;
-	@Override
-	@SuppressWarnings("unchecked")
-	public T calculate(Object x, Object y) {
-		if(x!=null)
-			this.x = Long.parseLong((String)x);
-		if(y!=null)
-			this.y = Long.parseLong((String)y);
-		LOG.trace("Calculating.. "+x+" "+this.getClass().getSimpleName()+" "+y);
-		if(x!=null && !x.equals("null") && y!=null && !y.equals("null"))
-			result = this.x.intValue() > this.y.intValue();
-		else
-			result = false;
-		LOG.trace("Result is:"+result);
-		return (T)result;
-		
-	}
-	
 }
 
-class SmallerThan<T> implements IOperation<T>{
-	private static final Logger LOG = LoggerFactory.getLogger(SmallerThan.class.getSimpleName());
-	Long x;
-	Long y;
-	Boolean result;
+class Xor extends Operator {
 	@Override
-	@SuppressWarnings("unchecked")
-	public T calculate(Object x, Object y) {
-		if(x!=null)
-		this.x = Long.valueOf((String)x).longValue();
-		if(y!=null)
-		this.y = Long.valueOf((String)y).longValue();
-		LOG.trace("Calculating.. "+x+" "+this.getClass().getSimpleName()+" "+y);
-		if(x!=null && !x.equals("null") && y!=null && !y.equals("null"))
-			result = this.x.longValue() < this.y.longValue();
-		else
-			result = false;
-		LOG.trace("Result is:"+result);
-		return (T)result;
-		
+	public boolean calculateBoolean(String... x) {
+		return Boolean.logicalXor(Boolean.parseBoolean(x[0]),Boolean.parseBoolean(x[1])) ;
 	}
+}
+class Not extends Operator {
+	@Override
+	public boolean calculateBoolean(String... x) {
+		return Boolean.parseBoolean(x[0]) ? false:true;
+	}
+}
 	
+class BiggerThan extends Operator {
+	
+	
+	/**
+	 * true if the first operand is bigger than the second
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	@Override
+	public boolean calculateBoolean(String... x) {
+		int r;
+		boolean result = false;
+		if(checkOperandNotNull(x[0]) && checkOperandNotNull(x[1])){
+			r = Long.compare(Long.parseLong(x[0]),Long.parseLong(x[1]));
+			result = r > 0 ? true : false;
+		}
+		return result;
+	}
 }
 
-class EqualsTo<T> implements IOperation<T>{
-	Boolean result;
+class SmallerThan extends Operator {
+	public boolean calculateBoolean(String... x) {
+		int r;
+		boolean result = false;
+		if(checkOperandNotNull(x[0]) && checkOperandNotNull(x[1])){
+			r = Long.compare(Long.parseLong(x[0]),Long.parseLong(x[1]));
+			result = r < 0 ? true : false;
+		}
+		return result;
+	}
+
+
+}
+
+class EqualsTo extends Operator {
+//	public boolean calculateBoolean(String... x) {
+//		int r;
+//		boolean result = false;
+//		if(checkOperandNotNull(x[0]) && checkOperandNotNull(x[1])){
+//			r = Long.compare(Long.parseLong(x[0]),Long.parseLong(x[1]));
+//			result = r == 0 ? true : false;
+//		}
+//		return result;
+//	}
+	
+	
+	
 	private static final Logger LOG = LoggerFactory.getLogger(EqualsTo.class.getSimpleName());
 	@Override
-	@SuppressWarnings("unchecked")
-	public T calculate(Object x, Object y) {
-		LOG.trace("x->"+x+"<- & y->"+y+"<-");
-		LOG.trace("Calculating.. "+x+" "+this.getClass().getSimpleName()+" "+y);
-		if(x != null && !x.equals("null"))
-			if(y!=null && !y.equals("null"))
-				result = x.equals(y);
+	public boolean calculateBoolean(String... x) {
+		boolean result;
+		LOG.trace("x->"+x[0]+"<- & y->"+x[1]+"<-");
+		LOG.trace("Calculating.. "+x[0]+" "+this.getClass().getSimpleName()+" "+x[1]);
+		if(x[0] != null && !x[0].equals("null"))
+			if(x[1]!=null && !x[1].equals("null"))
+				result = x[0].equals(x[1]);
 			else
 				result = false;
 		else
-			if(y!=null && !y.equals("null"))
+			if(x[1]!=null && !x[1].equals("null"))
 				result = false;
 			else
 				result = true;
 		LOG.trace("Result is:"+result);
-		return (T)result;
+		return result;
 		
 	}
-	
 }
 
-class BiggerEqualsTo<T> implements IOperation<T>{
-	private static final Logger LOG = LoggerFactory.getLogger(BiggerEqualsTo.class.getSimpleName());
-	Long x;
-	Long y;
-	Boolean result;
+class BiggerEqualsTo extends Operator{
 	@Override
-	@SuppressWarnings("unchecked")
-	public T calculate(Object x, Object y) {
-		if(x!=null)
-			this.x = Long.valueOf((String)x).longValue();
-		if(y!=null)
-			this.y = Long.valueOf((String)y).longValue();
-		LOG.trace("x->"+x+"<- & y->"+x+"<-");
-		LOG.trace("Calculating.. "+x+" "+this.getClass().getSimpleName()+" "+y);
-		if(x!=null && !x.equals("null") && y!=null && !y.equals("null"))
-			result = this.x.longValue() >= this.y.longValue();
-		else
-			result = false;
-		LOG.trace("Result is:"+result);
-		return (T)result;
-		
+	public boolean calculateBoolean(String... x) {
+		int r;
+		boolean result = false;
+		if(checkOperandNotNull(x[0]) && checkOperandNotNull(x[1])){
+			r = Long.compare(Long.parseLong(x[0]),Long.parseLong(x[1]));
+			result = r >= 0 ? true : false;
+		}
+		return result;
 	}
 	
 }
-class SmallerEqualsTo<T> implements IOperation<T>{
-	Long x;
-	Long y;
-	Boolean result;
-	private static final Logger LOG = LoggerFactory.getLogger(SmallerEqualsTo.class.getSimpleName());
+class SmallerEqualsTo extends Operator {
+
 	@Override
-	@SuppressWarnings("unchecked")
-	public T calculate(Object x, Object y) {
-		if(x!=null)
-			this.x = Long.valueOf((String)x).longValue();
-		if(y!=null)
-			this.y = Long.valueOf((String)y).longValue();
-		LOG.trace("x->"+x+"<- & y->"+x+"<-");
-		LOG.trace("Calculating.. "+x+" "+this.getClass().getSimpleName()+" "+y);
-		if(x!=null && !x.equals("null") && y!=null && !y.equals("null"))
-			result = this.x.longValue() <= this.y.longValue();
-		else
-			result = false;
-		LOG.trace("Result is:"+result);
-		return (T)result;
-		
+	public boolean calculateBoolean(String... x) {
+		int r;
+		boolean result = false;
+		if(checkOperandNotNull(x[0]) && checkOperandNotNull(x[1])){
+			r = Long.compare(Long.parseLong(x[0]),Long.parseLong(x[1]));
+			result = r <= 0 ? true : false;
+		}
+		return result;
+	}
+	
+}
+class NotEqualsTo extends Operator {
+	@Override
+	public boolean calculateBoolean(String... x) {
+		int r;
+		boolean result = false;
+		if(checkOperandNotNull(x[0]) && checkOperandNotNull(x[1])){
+			r = Long.compare(Long.parseLong(x[0]),Long.parseLong(x[1]));
+			result = r != 0 ? true : false;
+		}
+		return result;
 	}
 	
 }

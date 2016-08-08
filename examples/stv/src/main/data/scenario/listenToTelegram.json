@@ -1,7 +1,7 @@
 {
-   "_id": "scenario/listenToTelegramG",
+   "_id": "scenario/listenToTelegramSc",
    "type": "scenario",
-   "goal": "goals/listenToTelegramSc",
+   "goal": "goals/listenToTelegramG",
    "description":"scenario for achieving goal listen to Telegram",
    "steps":[
    {"activity":"activity/listenToTelegram"}

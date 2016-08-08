@@ -7,7 +7,7 @@ ltmemory:
    user: admin
    pass: password
 capabilities:
-   pkg: scc-1.0.jar
+   pkg: ./scc/build/libs/scc-0.1.jar
    categories: home
    sense: readValue
    categories: home-security, airquality

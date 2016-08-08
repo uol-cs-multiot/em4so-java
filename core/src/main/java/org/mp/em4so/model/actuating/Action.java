@@ -167,7 +167,7 @@ private Hashtable<String,?> argValues;
 	public String toString(){
 		String str = "ACTION: #{";
 		try{
-		str = "\n service name: "+service.getName()+"\n argTypes:\n";
+		str += "\n service name: "+service.getName()+"\n argTypes:\n";
 		if(service!=null && service.getArgTypes()!=null)
 		for(Entry <String,String>e:service.getArgTypes().entrySet()){
 			str+=""+e.getKey()+"-"+e.getValue()+" \n";
@@ -178,7 +178,8 @@ private Hashtable<String,?> argValues;
 			str+=e.getKey()+"-"+e.getValue()+" \n";
 		}
 		
-		str+= " result: {"+this.getResult()+"}";
+		str+= " result: {"+this.getResult()+"},";
+		str+= " status: {"+this.getStatus()+"}";
 		str = str + "}#:END\n";
 		
 		}catch(Exception e){

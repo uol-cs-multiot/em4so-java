@@ -13,6 +13,7 @@ import java.util.List;
 import org.mp.em4so.exceptions.UnachievableGoalException;
 import org.mp.em4so.model.actuating.Action;
 import org.mp.em4so.model.actuating.Activity;
+import org.mp.em4so.model.agent.Goal;
 import org.mp.em4so.model.agent.Role;
 import org.mp.em4so.model.common.Element;
 import org.mp.em4so.model.common.Service;
@@ -63,7 +64,7 @@ public class ActionExecutor {
 	public Action executeKnownAction(SmartObjectAgManager somanager, Activity activity,Action action)throws UnachievableGoalException{
 		Service foundService = null;
 		try{
-		LOG.info(this.somanager.getId()+": Preparing execution of known action:"+action);
+		LOG.info("{}: Preparing execution of known action: {} ",this.somanager.getId(),action);
 		foundService = action.getService();
 		foundService.setExecutionInstance(ServiceAssembler.populateExecutionInstance(action.getService()));	
 		if(foundService!= null //Only known services and execution instances
@@ -71,7 +72,7 @@ public class ActionExecutor {
 				&& foundService.getExecutionInstance().getHost()!=null 
 				&& foundService.getExecutionInstance().getHost().getUrls() != null) {
 				
-			LOG.debug(this.somanager.getId()+": Found service:{} to execute w role {} on: {} result: {}",foundService.getName(),activity.getRole().getId(),foundService.getExecutionInstance().getHost().getUrls(),action.getResult());
+			LOG.trace(this.somanager.getId()+": Found service:{} to execute w role {} on: {} result: {}",foundService.getName(),activity.getRole().getId(),foundService.getExecutionInstance().getHost().getUrls(),action.getResult());
 					foundService.setExecutingRoleId(activity.getRole().getId());
 					ServiceAssembler.executeService(foundService,
 							loadArgValues(action,activity).getArgValues(),
@@ -113,7 +114,7 @@ public class ActionExecutor {
 				&& foundService.getExecutionInstance().getHost()!=null 
 				&& foundService.getExecutionInstance().getHost().getUrls() != null) {
 				
-			LOG.debug(this.somanager.getId()+": Found service:"+foundService.getName()+" to execute on: "+foundService.getExecutionInstance().getHost().getUrls()+" result:"+action.getResult());
+			LOG.trace(this.somanager.getId()+": Found service:"+foundService.getName()+" to execute on: "+foundService.getExecutionInstance().getHost().getUrls()+" result:"+action.getResult());
 					foundService.setExecutingRoleId(activity.getRole().getId());
 					ServiceAssembler.executeService(foundService,loadArgValues(action,activity).getArgValues(),loadResultElement(activity,action));
 					action.setStatus("done");
@@ -147,23 +148,23 @@ public class ActionExecutor {
 		LOG.trace(" The result will go to: {}",action);
 		if(action.getResult()!=null && activity.getOutput()!=null && !activity.getOutput().isEmpty()){
 			
-			indexO = Integer.parseInt(action.getResult().substring(1, action.getResult().length()))-1;
+			indexO = Integer.parseInt(action.getResult().substring(2, action.getResult().length()))-1;
 			
-			LOG.debug("To get knowledge index {}",indexO);
+			LOG.trace("To get knowledge index {}",indexO);
 			element = activity.getOutput().get(indexO);
-			LOG.debug("To get output element {}",element);
+			LOG.trace("To get output element {}",element);
 			if(element!= null && element.getName()!=null && element.getScope()!=null && element.getAttributeName()!=null && element.getKind()!=null){
 				if(element.getName().contains(".")){
-					indexI = Integer.parseInt(element.getName().substring(1, element.getName().indexOf(".")))-1;
+					indexI = Integer.parseInt(element.getName().substring(2, element.getName().indexOf(".")))-1;
 					attribute = element.getName().substring(element.getName().indexOf(".")+1,element.getName().length());
 					
-					LOG.debug("To get knowledge index {} from {}",indexI,activity.getInputKnowledge().size());
+					LOG.trace("To get knowledge index {} from {}",indexI,activity.getInputKnowledge().size());
 					elementIn = activity.getInputKnowledge().get(indexI);
 					element.setName(element.getScope()+"."+elementIn.getName());
 					element.setAttributes(new HashMap<String,String>());
 					element.getAttributes().put(attribute, (String)action.getArgValues().get(attribute));
 				}
-				LOG.debug("Element to serialize {}",element);
+				LOG.trace("Element to serialize {}",element);
 				ObjectNode on = (JSONUtils.<Element>objectToObjecNode(element));
 				resultTo = on.toString();
 				LOG.trace(" 1-Result of serialization	: {}",resultTo);
@@ -199,8 +200,8 @@ public class ActionExecutor {
 		List<Element> outputKnowledge = activity.getOutput();
 		List<Element> knowledgeList = null;
 		Hashtable<String,Object> newArgValues = null;
-		if(inputKnowledge!=null) LOG.debug(" There are {} elements as input knowledge",inputKnowledge.size());
-		if(outputKnowledge!=null) LOG.debug(" There are {} elements as output knowledge",outputKnowledge.size());
+		if(inputKnowledge!=null) LOG.trace(" There are {} elements as input knowledge",inputKnowledge.size());
+		if(outputKnowledge!=null) LOG.trace(" There are {} elements as output knowledge",outputKnowledge.size());
 		
 		if(action!=null && action.getArgValues()!=null){ // action has no arguments
 			
@@ -212,16 +213,16 @@ public class ActionExecutor {
 			while(it.hasNext()){
 				key = it.next();
 				value = action.getArgValues().get(key).toString();
-				
-				if(value.startsWith("k")) // this argument comes from input knowledege list
-					knowledgeList = inputKnowledge;
-				else if (value.startsWith("o")) // this argument comes from output knowledege list
-					knowledgeList = outputKnowledge;
-				
-				value = value.substring(1,value.length());
-				LOG.debug("To get knowledge item {} order ={}",value, key);
-				
-				newArgValues = getKnowledgeItemForService(knowledgeList, value, action, key, outputKnowledge,newArgValues);
+				if(value.startsWith("%")){
+					if(value.startsWith("%i")) // this argument comes from input knowledege list
+						knowledgeList = inputKnowledge;
+					else if (value.startsWith("%o")) // this argument comes from output knowledege list
+						knowledgeList = outputKnowledge;
+					value = value.substring(2,value.length());
+					LOG.trace("To get knowledge item {} order ={}",value, key);
+					newArgValues = getKnowledgeItemForService(knowledgeList, value, action, key, outputKnowledge,newArgValues);
+				}else 
+					newArgValues.put(key,value);
 			}
 			
 			if(newArgValues.size()>0){
@@ -252,7 +253,7 @@ public class ActionExecutor {
 			index = Integer.parseInt(elementId.substring(0, elementId.indexOf(".")))-1;
 			attribute = elementId.substring(elementId.indexOf(".")+1,elementId.length());
 			
-			LOG.debug("To get knowledge index value. {}",elementId);
+			LOG.trace("To get knowledge index value. {}",elementId);
 			element = knowledgeList.get(index);
 			
 			if(element.getValue()==null){
@@ -267,7 +268,7 @@ public class ActionExecutor {
 			
 		}else{
 			
-			LOG.debug("To get knowledge index value {}",elementId);
+			LOG.trace("To get knowledge index value {}",elementId);
 			index = Integer.parseInt(elementId)-1;
 			
 			
@@ -281,7 +282,7 @@ public class ActionExecutor {
 			//replace value scope with output
 			if(element.getScope()!=null){
 				 for(Element output:outputKnowledge){
-					if(output.getName()!=null && output.getName().equals("k"+elementId)){
+					if(output.getName()!=null && output.getName().equals("%i"+elementId)){
 						element.setScope(output.getScope());
 						LOG.trace("Set scope from {} to {}",element.getScope(),output.getScope());
 					}
@@ -301,73 +302,73 @@ public class ActionExecutor {
 	 * @param activity the activity
 	 * @return true, if successful
 	 */
-	public boolean executeActivity(Activity activity){
-		boolean pendingWork = true;
-		boolean prerequisite = false;
-		List<Action> actions = null;
-		int j = 0;
-		Action action;
-		actions = activity.getActions();
-		Action actionStatus;
-		List<String> prereq;
-		String prer = null;
-		LOG.trace("Processing activity {} with {} actions",activity.getId(),activity.getActions());
-		while(actions!=null && actions.size() > 0 ){
-			action = actions.get(j);
-			LOG.debug(somanager.getId()+": (1)executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
-			
-			//check if status has been updated
-			actionStatus = somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId());
-			if(actionStatus!=null){
-				action.setStatus(actionStatus.getStatus());
-			}else {
-//				action.getService().setId(a.getSeq()+"."+action.getId());
-				actionStatus = action;
-				if(actionStatus.getStatus()==null){
-					actionStatus.setStatus("pending");
-				}
-				
-				addActionStatus(activity.getSeq()+"."+action.getId(), actionStatus);
-			}
+//	public boolean executeActivity(Activity activity){
+//		boolean pendingWork = true;
+//		boolean prerequisite = false;
+//		List<Action> actions = null;
+//		int j = 0;
+//		Action action;
+//		actions = activity.getActions();
+//		Action actionStatus;
+//		List<String> prereq;
+//		String prer = null;
+//		LOG.trace("Processing activity {} with {} actions",activity.getId(),activity.getActions());
+//		while(actions!=null && actions.size() > 0 ){
+//			action = actions.get(j);
+//			LOG.trace(somanager.getId()+": (1)executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+//			
+//			//check if status has been updated
+//			actionStatus = somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId());
+//			if(actionStatus!=null){
+//				action.setStatus(actionStatus.getStatus());
+//			}else {
+////				action.getService().setId(a.getSeq()+"."+action.getId());
+//				actionStatus = action;
+//				if(actionStatus.getStatus()==null){
+//					actionStatus.setStatus("pending");
+//				}
+//				
+//				addActionStatus(activity.getSeq()+"."+action.getId(), actionStatus);
+//			}
+////		
+//			LOG.trace(somanager.getId()+": (2) executing action:"+actionStatus.getService().getName()+". Status: "+actionStatus.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+//			
+//			//Pending Actions
+//			if(action.getStatus().equals("pending")){
+//				pendingWork = true;
+//			
+//			LOG.trace(somanager.getId()+": (3) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+//			prereq = action.getPrereq();
+//			LOG.trace(somanager.getId()+": (3-Inner) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId())+" prerrequisites:"+prereq);
+//			if(prereq!=null){
+//				prerequisite = false;
+//				
+//				for(String pre:prereq){
+//					prer = somanager.getActionsStatus().get(activity.getSeq()+"."+pre).getStatus();
+//					LOG.trace(somanager.getId()+": (4-Inner) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId())+" prerequiste: "+prer+ " = "+activity.getSeq()+"."+pre);
+//					if(prer != null && prer.equals("done")){
+//						prerequisite = true;
+//					}else{
+//						prerequisite = false;
+//					}
+//				}
+//				if(prerequisite) executeAction(somanager,action,activity);
+//			}else{
+//				executeAction(somanager,action,activity);
+//			}
+//			//if onprogress it doesn't do anything, just continue and the in the next run probably it's done
+//			
+//		}else if (action.getStatus().equals("onprogress")){
+//			pendingWork = true;
+//			LOG.trace(somanager.getId()+": (5) action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+//		}
+//			j++;
+//			LOG.trace(somanager.getId()+": (6) action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()) + " pendingWork:"+pendingWork);
+//		}
 //		
-			LOG.debug(somanager.getId()+": (2) executing action:"+actionStatus.getService().getName()+". Status: "+actionStatus.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
-			
-			//Pending Actions
-			if(action.getStatus().equals("pending")){
-				pendingWork = true;
-			
-			LOG.debug(somanager.getId()+": (3) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
-			prereq = action.getPrereq();
-			LOG.debug(somanager.getId()+": (3-Inner) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId())+" prerrequisites:"+prereq);
-			if(prereq!=null){
-				prerequisite = false;
-				
-				for(String pre:prereq){
-					prer = somanager.getActionsStatus().get(activity.getSeq()+"."+pre).getStatus();
-					LOG.debug(somanager.getId()+": (4-Inner) executing action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId())+" prerequiste: "+prer+ " = "+activity.getSeq()+"."+pre);
-					if(prer != null && prer.equals("done")){
-						prerequisite = true;
-					}else{
-						prerequisite = false;
-					}
-				}
-				if(prerequisite) executeAction(somanager,action,activity);
-			}else{
-				executeAction(somanager,action,activity);
-			}
-			//if onprogress it doesn't do anything, just continue and the in the next run probably it's done
-			
-		}else if (action.getStatus().equals("onprogress")){
-			pendingWork = true;
-			LOG.debug(somanager.getId()+": (5) action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
-		}
-			j++;
-			LOG.debug(somanager.getId()+": (6) action:"+action.getService().getName()+". Status: "+action.getStatus()+". ActionStatus: "+somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()) + " pendingWork:"+pendingWork);
-		}
-		
-		
-		return pendingWork;
-	}
+//		
+//		return pendingWork;
+//	}
 	
 	
 	
@@ -375,23 +376,25 @@ public class ActionExecutor {
 	/**
 	 * Execute activity defined in SO KB.
 	 *
+	 * @param goal
 	 * @param activity the activity
 	 * @return true, if successful
 	 * @throws UnachievableGoalException the unachievable goal exception
 	 */
-	public boolean executeKnownActivity(Activity activity) throws UnachievableGoalException{
+	
+	public boolean executeKnownActivity(Goal goal,Activity activity) throws UnachievableGoalException{
 		boolean pendingWork = true;
 		List<Action> actions = null;
 		actions = activity.getActions();
 		boolean [] activityStatus = new boolean[actions.size()];
 		Arrays.fill(activityStatus, false);
 		int i = 0;
-		LOG.trace("{}: ******* Start processing local activity {} with ",somanager.getId(),activity.getId());
+		LOG.trace("{}: ******* Start processing local activity {} ",somanager.getId(),activity.getId());
 		if(activity.getActions()!=null && actions.size() > 0){
 			LOG.trace("{} actions *******",activity.getActions().size());
 			for(Action action:actions){
-				LOG.trace("Ready to process action Id is:{} and Service name is {}",action.getId(),action.getService().getName());
-				activityStatus[i]=processAction(activity,action);
+				LOG.trace("Ready to process action Id is:{}, status: {} and Service name is {}",action.getId(),action.getStatus(),action.getService().getName());
+				activityStatus[i]=processAction(goal,activity,action);
 				i++;
 			}
 			for (i=0;i<activityStatus.length;i++){
@@ -415,7 +418,7 @@ public class ActionExecutor {
 	 * @return the remote activity status
 	 */
 	public String getRemoteActivityStatus(Activity activity){
-		LOG.debug("{}: Starting update status of remote activity: {}. Status found is: {}  ",somanager.getId(),activity.getId(),somanager.getRemoteActivitiesStatus().get(activity.getId()));
+		LOG.trace("{}: Starting update status of remote activity: {}. Status found is: {}  ",somanager.getId(),activity.getId(),somanager.getRemoteActivitiesStatus().get(activity.getId()));
 		
 		String newStatus = null;
 		newStatus = somanager.getRemoteActivitiesStatus().get(activity.getId());
@@ -448,7 +451,7 @@ public class ActionExecutor {
 			doneActivity.setId(activity.getId());
 			doneActivity.setStatus("done");
 			SOMessageSender.send(host.getUrls().get(0), "activity",doneActivity, "activityupdate");
-			LOG.debug("{}: Role {} notified of activity {} done.",somanager.getId(),roleToNotify.getId(),doneActivity.getId());
+			LOG.trace("{}: Role {} notified of activity {} done.",somanager.getId(),roleToNotify.getId(),doneActivity.getId());
 		}else{
 			LOG.info("WARNING: Not available hosts for role {} to notify of activity {} done.",roleToNotify,activity.getId());
 		}
@@ -458,17 +461,19 @@ public class ActionExecutor {
 	/**
 	 * Check status of the action and decides what action processing is required (execute, wait, error).
 	 *
+	 * @param goal
 	 * @param activity the activity
 	 * @param action the action
 	 * @return true, if successful
 	 * @throws UnachievableGoalException the unachievable goal exception
 	 */
-	public boolean processAction(Activity activity,Action action) throws UnachievableGoalException{
+	public boolean processAction(Goal goal,Activity activity,Action action) throws UnachievableGoalException{
 		
 	boolean pendingWork = false;
 		Action actionStatus = null;
-		
-		LOG.debug("{} : (1) Start executing action: {} with status: ->{} / {} <- and service: id: ->{}<-, name: ->{}<-", 
+		String statusKey = null;
+				
+		LOG.trace("{} : (1) Start executing action: {} with status: ->{} / {} <- and service: id: ->{}<-, name: ->{}<-", 
 				somanager.getId(),
 				action.getId(),
 				action.getStatus(),
@@ -478,7 +483,10 @@ public class ActionExecutor {
 				);
 		
 		//check if status has been updated
-				actionStatus = somanager.getActionsStatus().get(activity.getId()+"."+activity.getSeq()+"."+action.getId());
+				statusKey = goal.getId()+"."+activity.getId()+"."+activity.getSeq()+"."+action.getId();
+				actionStatus = somanager.getActionsStatus().get(statusKey);
+				LOG.trace("ACTION STATUS KEY:{} AND VALUE: {}", statusKey,actionStatus);
+
 				if(actionStatus!=null){
 					action.setStatus(actionStatus.getStatus());
 				}else {
@@ -486,12 +494,12 @@ public class ActionExecutor {
 					if(actionStatus.getStatus()==null){
 						actionStatus.setStatus("pending");
 					}
-					action.getService().setStatusKey(activity.getId()+"."+activity.getSeq()+"."+action.getId());
+					action.getService().setStatusKey(statusKey);
 					addActionStatus(action.getService().getStatusKey(), actionStatus);
 					
 				}
 		
-		LOG.debug("{} : (2) Processing by status action: {} with status: {} and {}", somanager.getId(),action.getService().getName(),action.getStatus(),somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
+		LOG.trace("{} : (2) Processing by status action: {} with status: {} and {}", somanager.getId(),action.getService().getName(),action.getStatus(),somanager.getActionsStatus().get(activity.getSeq()+"."+action.getId()));
 		
 		switch (action.getStatus()){
 			case "pending":{
@@ -505,10 +513,10 @@ public class ActionExecutor {
 				
 				if(prereq!=null){
 					prerequisite = false;
-					LOG.debug("{}: (3) Prerequisites of action {} are : ",somanager.getId(),action.getService().getName());
+					LOG.trace("{}: (3) Prerequisites of action {} are : ",somanager.getId(),action.getService().getName());
 					for(String pre:prereq){
 						prer = somanager.getActionsStatus().get(activity.getSeq()+"."+pre).getStatus();
-						LOG.debug("{}: (4) - {} Prerequisite {} w status: {}",somanager.getId(),pre,somanager.getActionsStatus().get(activity.getSeq()+"."+pre),prer);
+						LOG.trace("{}: (4) - {} Prerequisite {} w status: {}",somanager.getId(),pre,somanager.getActionsStatus().get(activity.getSeq()+"."+pre),prer);
 						if(prer != null && prer.equals("done")){
 							prerequisite = true;
 						}else{
@@ -518,7 +526,7 @@ public class ActionExecutor {
 					
 				}
 				
-				LOG.debug("{}: (5) Any pending prerequisite for action {}? {} ",somanager.getId(),action.getService().getName(),prerequisite);
+				LOG.trace("{}: (5) Any pending prerequisite for action {}? {} ",somanager.getId(),action.getService().getName(),prerequisite);
 				
 				if(!prerequisite) action = executeKnownAction(somanager,activity,action);
 			}
@@ -568,7 +576,7 @@ public class ActionExecutor {
 	 */
 	public void updateActivityStatus(Activity activity){
 		somanager.getRemoteActivitiesStatus().put(activity.getId(),activity.getStatus());
-		LOG.debug("Updating status of activity {} to: {}",activity.getId(),somanager.getRemoteActivitiesStatus().get(activity.getId()));
+		LOG.trace("Updating status of activity {} to: {}",activity.getId(),somanager.getRemoteActivitiesStatus().get(activity.getId()));
 	}
 	
 	/**
@@ -594,6 +602,7 @@ public class ActionExecutor {
 	 * @param action the action
 	 */
 	public void addActionStatus(String fullSequence, Action action){
+		LOG.trace("Added action status for: {} ",fullSequence);
 		somanager.getActionsStatus().put(fullSequence, action);
 	}
 	

@@ -40,11 +40,11 @@
            "args": [
                {
                		"model": {
-                       "java.lang.String": "k1.model"
+                       "java.lang.String": "%i1.model"
                    }
                }
            ],
-           "result":{"java.lang.String":"o1"}
+           "result":{"java.lang.String":"%o1"}
        }
    ],
    "output": 
@@ -54,7 +54,7 @@
 			"scope":"demand",
 			"kind":"resource",
 			"effect": "increase",
-			"name":"k1.model",
+			"name":"%i1.model",
 			"attributeName":"level"
 		}
 		

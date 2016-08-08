@@ -30,10 +30,10 @@
            "name": "checkBestPriceStore",
            "args": [{
                		"product": {
-                       "java.lang.String": "k1.name" },
+                       "java.lang.String": "%i1.name" },
                    "model": {
-                       "java.lang.String": "k1.model" } } ],
-           "result":{"java.lang.String":"o1"} } ,
+                       "java.lang.String": "%i1.model" } } ],
+           "result":{"java.lang.String":"%o1"} } ,
            
            {
            "id": "2",
@@ -42,10 +42,10 @@
                {
                		
                    "msg": {
-                      "org.mp.em4so.model.common.Element":"k2" 
+                      "org.mp.em4so.model.common.Element":"%i2" 
                    },
                    "property": {
-                       "org.mp.em4so.model.common.Element": "o1"
+                       "org.mp.em4so.model.common.Element": "%o1"
                    }
                }
            ]
@@ -61,7 +61,7 @@
 			"attributeName":"value"
 		},
 		{
-			"knowledge":["o1"],
+			"knowledge":["%o1"],
 			"effect": "communicate"
 		}
 		],

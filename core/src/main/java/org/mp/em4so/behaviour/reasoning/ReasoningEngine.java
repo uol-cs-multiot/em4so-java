@@ -2,7 +2,7 @@
  * Copyright: mperhez (2015)
  * License: The Apache Software License, Version 2.0
  */
-package org.mp.em4so.agentManager;
+package org.mp.em4so.behaviour.reasoning;
 
 import java.net.URI;
 import java.util.Hashtable;
@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
 
+import org.mp.em4so.agentManager.KnowledgeBaseManager;
+import org.mp.em4so.agentManager.SmartObjectAgManager;
+import org.mp.em4so.model.ModelConstants;
 import org.mp.em4so.model.actuating.Activity;
 import org.mp.em4so.model.agent.Goal;
 import org.mp.em4so.model.common.Element;
@@ -17,6 +20,7 @@ import org.mp.em4so.model.common.Service;
 import org.mp.em4so.model.reasoning.Function;
 import org.mp.em4so.model.reasoning.IOperation;
 import org.mp.em4so.model.reasoning.Operation;
+import org.mp.em4so.model.reasoning.Operator;
 import org.mp.em4so.model.sensing.Observation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,38 +135,31 @@ public class ReasoningEngine {
 	 */
 	public String getSinglePropertyValue(KnowledgeBaseManager kbm,Element element){
 		String value = null;
-		Observation o = null;
 		String equivalent = null;
 		Element foundElement = null;
-		LOG.debug(" Getting property value for: {}",element);
-		if(element != null){
-			if(element.getName()!=null){
-				if(element.getAttributeName()!=null && element.getAttributeName().equals("level")){
-						o = kbm.getRecentObservation(element.getName());
-						if(o!=null){ 
-							value = o.getValue();
-						}
-				}else{
+		LOG.trace(" Getting property value for: {}",element);
+		if(element != null && element.getName()!=null && element.getScope()!=null && element.getKind()!=null){
 						foundElement = kbm.getElement(element); 
 						if(foundElement!= null){
-							value = element.getValue();
+							value = foundElement.getValue();
+							LOG.trace("Found value is: {}", value);
 						}else{
 							LOG.trace("Entering to get Equivalences");
 							//TODO To complete identification of equivalent properties among different SOs 
 							equivalent = getKnowledgeElement(kbm,"type",element.getScope());
 							element.setScope(equivalent);
 							value = getSinglePropertyValue(kbm,element);
+							LOG.trace("Equivalent found value is: {}", value);
 							}
-				}
 	
 				
 			}else if(element.getValue()!=null){
 				value = element.getValue();
+				LOG.trace("Given value is: {}", value);
 			}
 				
-		}
 		
-		if (value!=null && (value.equals("null")|| value.equals(""))) value = null;
+			if (value!=null && (value.equals("null")|| value.equals(""))) value = null;
 		return value;
 	}
 	
@@ -207,11 +204,11 @@ public class ReasoningEngine {
 	 * @param kbm the kbm
 	 * @return the object
 	 */
-	public Object solveFunction(Function function, KnowledgeBaseManager kbm){
-		Object result = null;
+	public Boolean solveBooleanFunction(Function function, KnowledgeBaseManager kbm){
+		Boolean result = null;
 		String operand1=null, operand2=null,operator = null;
 		operator = function.getOperator();
-		LOG.debug("Solving for: {} {} {} or {} operands",function.getOperand1(),operator,function.getOperand2(), function.getOperands());
+		LOG.trace("Solving for: {} {} {} or {} operands",function.getOperand1(),operator,function.getOperand2(), function.getOperands());
 
 		
 		if(function.getOperands()==null ){
@@ -225,34 +222,34 @@ public class ReasoningEngine {
 				if(function.getOperand1().getValue()!=null){
 					operand1 = function.getOperand1().getValue();
 					operand2 = getSingleMessageValue(kbm,function.getOperand2(),operand1);
-					LOG.debug("Solving if for:"+operand1+" "+operator+" "+operand2);
+					LOG.trace("Solving if for:"+operand1+" "+operator+" "+operand2);
 				}else {
 					operand2 = function.getOperand2().getValue();
 					operand1 = getSingleMessageValue(kbm,function.getOperand1(),operand2);
-					LOG.debug("Solving else 1 for:"+operand1+" "+operator+" "+operand2);
+					LOG.trace("Solving else 1 for:"+operand1+" "+operator+" "+operand2);
 				}
 			}else{
 				operand1 = getSinglePropertyValue(kbm,function.getOperand1());
 				operand2 = getSinglePropertyValue(kbm,function.getOperand2());
-				LOG.debug("Solving else 2 for operand 1 = {}: {} {} operand2 = {}: {}",function.getOperand1(),operand1, operator,function.getOperand2(), operand2);
+				LOG.trace("Solving else 2 for operand 1 = {}: {} {} operand2 = {}: {}",function.getOperand1(),operand1, operator,function.getOperand2(), operand2);
 			}
 			
 			
-			LOG.debug("P1- o1: "+operand1+" "+operator+" o2:"+operand2);
-			Map<String,IOperation> theMap= null;
+			LOG.trace("P1- o1: "+operand1+" "+operator+" o2:"+operand2);
+			Map<String,Operator> theMap= null;
 
-			IOperation op;
+			Operator op;
 			Operation.getInstance();
 			theMap = Operation.opByName;
-			LOG.debug("the map:"+theMap+" and operator to find->"+operator+"<- and the o1:"+operand1+" and the o2:"+operand2);
+			LOG.trace("the map:"+theMap+" and operator to find->"+operator+"<- and the o1:"+operand1+" and the o2:"+operand2);
 			op = theMap.get(operator);
-			LOG.debug("The operation:"+op);
+			LOG.trace("The operation:"+op);
 			if(op!=null){
-				result = op.calculate(operand1, operand2);
+				result = op.calculateBoolean(operand1, operand2);
 			}else{
 				result = true;
 			}
-			LOG.debug("P1 -the result:"+result);
+			LOG.trace("P1 -the result:"+result);
 			//result = (Operation.getInstance().opByName.get(operator)).calculate(operand1, operand2);
 			LOG.trace("The result of {} {} {} is: {}",operand1,operator,operand2,result);
 		}else if(function.getOperands()!=null){
@@ -268,13 +265,13 @@ public class ReasoningEngine {
 			
 			
 			LOG.trace(" operator is: "+operator);
-			Object x = solveFunction(fop1,kbm);
+			String x = solveBooleanFunction(fop1,kbm).toString();
 			LOG.trace(" fop1: "+fop1);
-			Object y = solveFunction(fop2,kbm);
+			String y = solveBooleanFunction(fop2,kbm).toString();
 			LOG.trace(" fop2: "+fop2);
 			
 			Operation.getInstance();
-			result = Operation.opByName.get(operator).calculate(x,y);
+			result = Operation.opByName.get(operator).calculateBoolean(x,y);
 			LOG.trace("The result of {} {} {} is: {}",x,operator,y,result);
 		}
 		

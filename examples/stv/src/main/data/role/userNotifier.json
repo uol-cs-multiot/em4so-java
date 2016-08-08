@@ -10,6 +10,9 @@
    "responsibilities": [
      {
 	           "_id": "activity/notifyUser"
-	       }
+	       },
+	       {
+	           "_id": "activity/listenToTelegram"
+	           }
    ]
 }

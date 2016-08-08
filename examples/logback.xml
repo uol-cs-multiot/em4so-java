@@ -22,9 +22,10 @@
   <logger name="org.mortbay.log" level="OFF"/>
   <logger name="org.apache" level ="OFF"/>
   <logger name="o.a.h" level ="OFF"/>
+  <logger name="org.eclipse.jetty" level ="OFF"/>
    
 <!--  <root level="INFO">-->
-  <root level="TRACE">
+  <root level="DEBUG"> 
     <appender-ref ref="STDOUT" />
     <appender-ref ref="FILE" />
   </root>
