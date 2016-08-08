@@ -7,22 +7,20 @@ package org.mp.em4so.common.capabilities;
 import org.mp.em4so.model.actuating.Capability;
 
 // TODO: Auto-generated Javadoc
-/**
- * The Class HumanInterfaceCapability.
- */
-public class HumanInterfaceCapability extends Capability{
+/** The Class HumanInterfaceCapability. */
+public class HumanInterfaceCapability extends Capability
+{
 
-/**
- * Prints the.
- *
- * @param message the message
- */
-public void print(String message){
-//	if(message.startsWith("$") && message.endsWith("$")){
-//		this.getSomanagerAgent().getKbm().
-//	}else{
-	System.out.println(soca+": "+message);
-//	}
-}
+	/** Prints the.
+	 *
+	 * @param message the message */
+	public void print(String message)
+	{
+		//	if(message.startsWith("$") && message.endsWith("$")){
+		//		this.getSomanagerAgent().getKbm().
+		//	}else{
+		LOG.info(soca + ": " + message);
+		//	}
+	}
 
 }
