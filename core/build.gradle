@@ -32,6 +32,8 @@ dependencies {
     compile 'com.almende.eve:eve-state-couch:3.1.1'
     compile 'de.grundid.opendatalab:geojson-jackson:1.0'
     compile 'com.thoughtworks.paranamer:paranamer:2.7'
+    compile 'com.github.pengrad:java-telegram-bot-api:2.1.1'
+    
     //compile 'org.mp:measurement-lib:1.0'
 
     // Declare the dependency for your favourite test framework you want to use in your tests.
