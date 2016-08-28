@@ -11,9 +11,6 @@ import org.mp.em4so.model.common.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.pengrad.telegrambot.TelegramBot;
-import com.pengrad.telegrambot.TelegramBotAdapter;
-
 // TODO: Auto-generated Javadoc
 /** The Class Capability. */
 public abstract class Capability
@@ -25,9 +22,7 @@ public abstract class Capability
 	/** The log. */
 	protected final Logger LOG = LoggerFactory.getLogger(this.getClass().getSimpleName());
 
-	/** Telegram . */ //TODO : Change
-	protected final TelegramBot BOT = TelegramBotAdapter.build("262473126:AAGF5zvWXpssuP-SkedQkGUdbdn16A-sRiQ");
-
+	
 	/** The soca. */
 	protected SOControlAgent soca;
 
