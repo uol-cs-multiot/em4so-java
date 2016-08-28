@@ -72,21 +72,21 @@ class And extends Operator {
 
 	@Override
 	public boolean calculateBoolean(String... x) {
-		return Boolean.logicalAnd(Boolean.parseBoolean(x[0]),Boolean.parseBoolean(x[1]));
+		return Boolean.parseBoolean(x[0])&&Boolean.parseBoolean(x[1]);
 	}
 }
 
 class Or extends Operator {
 	@Override
 	public boolean calculateBoolean(String... x) {
-		return Boolean.logicalOr(Boolean.parseBoolean(x[0]),Boolean.parseBoolean(x[1]) );
+		return Boolean.parseBoolean(x[0])||Boolean.parseBoolean(x[1]) ;
 	}
 }
 
 class Xor extends Operator {
 	@Override
 	public boolean calculateBoolean(String... x) {
-		return Boolean.logicalXor(Boolean.parseBoolean(x[0]),Boolean.parseBoolean(x[1])) ;
+		return Boolean.parseBoolean(x[0])^Boolean.parseBoolean(x[1]) ;
 	}
 }
 class Not extends Operator {
