@@ -295,6 +295,33 @@ public abstract class JSONUtils {
 		return results;
 	}
 	
+	public static<V> Hashtable<String,V>tableJsonNToObject(Class<V> classType,JsonNode objectNode){
+		Hashtable<String,V> results = null;
+		
+		mapper.configure(
+				DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+				false);
+		try {
+			JavaType type = mapper.getTypeFactory().constructMapType(Hashtable.class, String.class, classType);
+			results = mapper.reader(type).readValue(objectNode);
+			
+		} catch (JsonParseException e) {
+			LOG.error(e.getMessage(),e);
+		} catch (JsonMappingException e) {
+			LOG.error(e.getMessage(),e);
+		} catch (IOException e) {
+			LOG.error(e.getMessage(),e);
+		}
+		
+	
+	for(String key:results.keySet()){
+		LOG.debug("the result keys are: "+key);//
+	}
+	
+	return results;
+		
+	}
+	
 /**
  * Table string to object.
  *
