@@ -5,7 +5,7 @@
 #(3) [OPTIONAL] Additional jar files needed to run the app.
 
 
-SO_PATH=/home/$2/workspace/git/em4so-java
+SO_PATH=/usr/local/home/$2/workspace/repastws/em4so-java
 
 JAR_SOM="$SO_PATH/somanager/build/libs/somanager-all-0.1.jar"
 JAR_SO="$SO_PATH/examples/$1/build/libs/$1-0.1.jar"

@@ -1,15 +1,11 @@
 #! /usr/bin/env bash
 
-# HOWTO
-#
-#run from outside the DESIGN_FOLDER directory, passing the name of the SO (not the full database)
-
 # Credentials
-USERNAME=admin
-PASSWORD=password
-HOST=localhost
-PORT=5984
-DBNAME=kbl_"$1"_agent
+HOST=$1
+USERNAME=$2
+PASSWORD=$3
+PORT=$4
+DBNAME=kbl_"$5"_agent
 DESIGN_FOLDER=_design
 cd $DESIGN_FOLDER
 

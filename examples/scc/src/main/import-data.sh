@@ -14,10 +14,10 @@
 # 6. run this script "./import-data.sh"
 
 # Credentials
-USERNAME=admin
-PASSWORD=password
-HOST=localhost
-PORT=5984
+HOST=$1
+USERNAME=$2
+PASSWORD=$3
+PORT=$4
 DBNAME=kbl_scc_agent
 DATA_FOLDER=data
 
